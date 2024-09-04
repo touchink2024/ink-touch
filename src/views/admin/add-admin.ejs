@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ink Touch - Large Format Printing</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
+
+    <!-- Favicon -->
+    <link href="../../img/favi.png" rel="icon" />
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icon Font Stylesheet -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <!-- Libraries Stylesheet -->
+    <link
+      href="../../lib/owlcarousel/assets/owl.carousel.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="../../lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../../css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Template Stylesheet -->
+    <link href="../../css/style.css" rel="stylesheet" />
+    <link href="../../css/form.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+      <%- include (`../partials/header`); -%>
+
+      <!-- Content Start -->
+      <div class="content">
+        <!-- Navbar Start -->
+        <%- include (`../partials/nav`); -%>
+        <!-- Navbar End -->
+
+        <!-- Recent Sales Start -->
+        <div class="container-fluid pt-4 px-4">
+          <div class="bg-light text-center rounded p-4">
+            <div class="container">
+              <header>Request Product</header>
+
+              <form action="submit">
+                <div class="form first">
+                  <div class="details personal">
+                    <div class="fields">
+                      <div class="input-field">
+                        <label>Ref No</label>
+                        <input type="text" readonly />
+                      </div>
+
+                      <div class="input-field">
+                        <label>Operator</label>
+                        <input type="text" readonly />
+                      </div>
+
+                      <div class="input-field">
+                        <label for="category">Category</label>
+                        <select id="category" name="category">
+                          <option value="" disabled selected>
+                            Select a category
+                          </option>
+                          <option value="Flex">Flex</option>
+                          <option value="Sav">Sav</option>
+                        </select>
+                      </div>
+
+                      <div class="input-field">
+                        <label for="size">Size</label>
+                        <select id="size" name="size">
+                          <option value="" disabled selected>
+                            Select a size
+                          </option>
+                        </select>
+                      </div>
+
+                      <div class="input-field">
+                        <label>Materials</label>
+                        <input type="test" placeholder="Enter mobile number" />
+                      </div>
+
+                      <div class="input-field">
+                        <label>Quantity</label>
+                        <input type="number" placeholder="Enter your gender" />
+                      </div>
+
+                      <div class="input-field">
+                        <label>Narration</label>
+                        <input type="text" placeholder="Enter your ccupation" />
+                      </div>
+
+                      <div
+                        class="input-field"
+                        style="margin-top: 20px !important"
+                      >
+                        <button class="btnText" type="submit">
+                          <span class="btnText">Submit</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- <div class="details ID">
+                    <button class="nextBtn">
+                      <span class="btnText">Next</span>
+                      <i class="uil uil-navigator"></i>
+                    </button>
+                  </div> -->
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Recent Sales End -->
+
+        <!-- Footer Start -->
+        <%- include (`../partials/footer`); -%>
+        <!-- Footer End -->
+      </div>
+      <!-- Content End -->
+
+      <!-- Back to Top -->
+      <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
+        ><i class="bi bi-arrow-up"></i
+      ></a>
+    </div>
+    <script>
+      document
+        .getElementById('category')
+        .addEventListener('change', function () {
+          const sizeSelect = document.getElementById('size');
+          const selectedCategory = this.value;
+
+          // Clear the existing options
+          sizeSelect.innerHTML =
+            '<option value="" disabled selected>Select a size</option>';
+
+          let sizes = [];
+
+          if (selectedCategory === 'Flex') {
+            sizes = [
+              '3 ft',
+              '4 ft',
+              '5 ft',
+              '6 ft',
+              '7 ft',
+              '8 ft',
+              '10 ft',
+              'Blacklit 10 ft',
+              'Mesh 10 ft',
+              'Relf flex 10 ft',
+            ];
+          } else if (selectedCategory === 'Sav') {
+            sizes = [
+              '4 ft',
+              '5 ft',
+              '4/5 ft',
+              'Relf sav 4/5 ft',
+              'pvc',
+              'Clear sticker 4&5 ft',
+              'Paper 3 ft',
+              'Paper 4 ft',
+              'Paper 5 ft',
+              'Fabric 4 ft',
+              'Fabric 5 ft',
+            ];
+          }
+
+          sizes.forEach(function (size) {
+            const option = document.createElement('option');
+            option.value = size.toLowerCase();
+            option.textContent = size;
+            sizeSelect.appendChild(option);
+          });
+        });
+    </script>
+  </body>
+</html>

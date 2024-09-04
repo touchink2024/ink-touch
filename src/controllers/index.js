@@ -1,0 +1,55 @@
+import {
+  signUp,
+  signUpPost,
+  forgetPassword,
+  forgetPasswordPost,
+  login,
+  loginPost,
+  // verifyOtp,
+} from './authController.js';
+import {
+  userIndex,
+  request,
+  allRequest,
+  wastage,
+  allWastage,
+  profile,
+} from './userController.js';
+
+import {
+  adminIndex,
+  allProduct,
+  requestProduct,
+  addProduct,
+  allWastages,
+  allUser,
+  addUser,
+  addAdmin,
+  allAdmin,
+  adminProfile,
+} from './adminController.js';
+
+export {
+  signUp,
+  signUpPost,
+  forgetPassword,
+  forgetPasswordPost,
+  login,
+  loginPost,
+  userIndex,
+  request,
+  allRequest,
+  wastage,
+  allWastage,
+  profile,
+  adminIndex,
+  allProduct,
+  allWastages,
+  requestProduct,
+  addProduct,
+  allUser,
+  addUser,
+  addAdmin,
+  allAdmin,
+  adminProfile,
+};

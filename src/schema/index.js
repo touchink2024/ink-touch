@@ -1,7 +1,18 @@
-const userSchema = require('./userValidation');
-const adminSchema = require('./adminValidation');
+import {
+  signUpSchema,
+  resetPasswordSchema,
+  loginSchema,
+} from './authValidation.js';
+// import { loginSchema } from './userValidation.js';
+import { productSchema, addUserSchema } from './adminValidation.js';
 
-const newsLetterSchema = require('./newsLetterValidation');
-const contactUsSchema = require('./contactUsValidation');
-
-module.exports = { userSchema, adminSchema, newsLetterSchema, contactUsSchema };
+export {
+  //auth
+  signUpSchema,
+  resetPasswordSchema,
+  loginSchema,
+  //admin
+  productSchema,
+  addUserSchema,
+  //user
+};

@@ -5,13 +5,11 @@ import { ServerError } from '../middlewares/index.js';
 
 export const sendMail = async (emailcontent) => {
   const transporter = nodemailer.createTransport({
-    service: config.SMTP_SERVICE,
+    service: config.mailerService,
     host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
     auth: {
-      user: config.SMTP_USER,
-      pass: config.SMTP_PASSWORD,
+      user: config.nodemailerEmail,
+      pass: config.nodemailerPassword,
     },
   });
 

@@ -73,48 +73,58 @@
               <div
                 class="d-flex align-items-center justify-content-between mb-3"
               >
-                <a href="/auth/register" class="">
+              <form
+              id="registrationForm"
+              data-url="/auth/register"
+              method="post"
+            >
                   <h3 class="text-primary" style="font-size: 26px !important">
                     <i class="me-2"></i>Welcome to Ink Touch
                   </h3>
-                </a>
-                <!-- <h3>Sign Up</h3> -->
+                  <div id="generalError" class="text-danger"></div>
+
+                
               </div>
               <div class="form-floating mb-3">
                 <input
                   type="text"
                   class="form-control"
-                  id="floatingText"
+                  name="name"
                   placeholder="jhondoe"
                 />
-                <label for="floatingText">Username</label>
+                <div id="nameError" class="text-danger"></div>
+                <label for="floatingText">Name</label>
               </div>
               <div class="form-floating mb-3">
                 <input
                   type="email"
                   class="form-control"
-                  id="floatingInput"
+                  name="email"
                   placeholder="name@example.com"
                 />
+                <div id="emailError" class="text-danger"></div>
                 <label for="floatingInput">Email address</label>
               </div>
               <div class="form-floating mb-4">
                 <input
                   type="password"
                   class="form-control"
-                  id="floatingPassword"
+                  name="password"
                   placeholder="Password"
                 />
+                <div id="passwordError" class="text-danger"></div>
                 <label for="floatingPassword">Password</label>
               </div>
+  
               <div
                 class="d-flex align-items-center justify-content-between mb-4"
               >
-                <a href="/auth/forgetPassword">Forgot Password</a>
+                <a href="/auth/forget-password">Forgot Password</a>
               </div>
-              <button type="submit" class="btn btn-primary py-3 w-100 mb-4">
+              <button id="submitButton" type="submit" class="btn btn-primary py-3 w-100 mb-4">
                 Sign Up
               </button>
+              </form>
               <p class="text-center mb-0">
                 Already have an Account? <a href="/auth/login">Sign In</a>
               </p>
@@ -138,5 +148,6 @@
 
     <!-- Template Javascript -->
     <script src="../js/main.js"></script>
+    <script src="../mail/register.js"></script>
   </body>
 </html>

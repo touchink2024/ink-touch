@@ -8,7 +8,7 @@
     <meta content="" name="description" />
 
     <!-- Favicon -->
-    <link href="../../img/favi.png" rel="icon" />
+    <link href="../img/favi.png" rel="icon" />
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -30,19 +30,21 @@
 
     <!-- Libraries Stylesheet -->
     <link
-      href="../../lib/owlcarousel/assets/owl.carousel.min.css"
+      href="../lib/owlcarousel/assets/owl.carousel.min.css"
       rel="stylesheet"
     />
     <link
-      href="../../lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
+      href="../lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
       rel="stylesheet"
     />
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="../../css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Template Stylesheet -->
-    <link href="../../css/style.css" rel="stylesheet" />
+    <link href="../css/style.css" rel="stylesheet" />
+    <link href="../css/viewBtn.css" rel="stylesheet" />
+
   </head>
 
   <body>
@@ -110,81 +112,62 @@
         <div class="container-fluid pt-4 px-4">
           <div class="bg-light text-center rounded p-4">
             <div class="d-flex align-items-center justify-content-between mb-4">
-              <h6 class="mb-0">All Request</h6>
+              <h6 class="mb-0">All Users</h6>
             </div>
+               <!-- Toast start -->
+               <div
+               class="position-fixed bottom-0 end-0 p-3"
+               style="z-index: 11"
+             >
+               <div id="toastContainer" class="toast-container"></div>
+             </div>
+             <!-- Toast End -->
             <div class="table-responsive">
               <table
                 class="table text-start align-middle table-bordered table-hover mb-0"
               >
                 <thead>
-                  <tr class="text-dark">
+                  <tr class="text-dark" style="text-align: center;">
                     <th scope="col">
                       <input class="form-check-input" type="checkbox" />
                     </th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Invoice</th>
-                    <th scope="col">Customer</th>
-                    <th scope="col">Amount</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Number</th>
                     <th scope="col">Status</th>
-                    <th scope="col">Action</th>
+                    <th scope="col" >Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>01 Jan 2045</td>
-                    <td>INV-0123</td>
-                    <td>Jhon Doe</td>
-                    <td>$123</td>
-                    <td>Paid</td>
+                  <% if (users.length > 0) { %> <% users.forEach(user => { %>
+                  <tr class="center">
+                    <th scope="col">
+                      <input class="form-check-input" type="checkbox" />
+                    </th>
+                    <td><%= user.name %></td>
+                    <td><%= user.email %></td>
+                    <td><%= user.phone_number %></td>
                     <td>
-                      <a class="btn btn-sm btn-primary" href="">Detail</a>
-                    </td>
+                      <select class="form-select account-status-select" data-user-id="<%= user._id %>">
+                          <option value="Active" <%= user.accountStatus === 'Active' ? 'selected' : '' %>>Active</option>
+                          <option value="Locked" <%= user.accountStatus === 'Locked' ? 'selected' : '' %>>Locked</option>
+                      </select>
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-warning popup-trigger" data-user-id="<%= user._id %>"
+                      onclick="showEditUserModal(this)">Edit</button>
+                    <button type="button" class="btn btn-success popup-trigger"  data-user-id="<%= user._id %>" data-url="/admin/viewUser" onclick="showViewUserModal(this)">View</button>
+                    <button type="button" class="btn btn-danger popup-trigger" data-action="delete" data-user-id="<%= user._id %>">Delete</button>
+
+                  </td>
+
+             
                   </tr>
+                  <% }); %> <% } else { %>
                   <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>01 Jan 2045</td>
-                    <td>INV-0123</td>
-                    <td>Jhon Doe</td>
-                    <td>$123</td>
-                    <td>Paid</td>
-                    <td>
-                      <a class="btn btn-sm btn-primary" href="">Detail</a>
-                    </td>
+                    <td colspan="9" class="text-center">No User found.</td>
                   </tr>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>01 Jan 2045</td>
-                    <td>INV-0123</td>
-                    <td>Jhon Doe</td>
-                    <td>$123</td>
-                    <td>Paid</td>
-                    <td>
-                      <a class="btn btn-sm btn-primary" href="">Detail</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>01 Jan 2045</td>
-                    <td>INV-0123</td>
-                    <td>Jhon Doe</td>
-                    <td>$123</td>
-                    <td>Paid</td>
-                    <td>
-                      <a class="btn btn-sm btn-primary" href="">Detail</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>01 Jan 2045</td>
-                    <td>INV-0123</td>
-                    <td>Jhon Doe</td>
-                    <td>$123</td>
-                    <td>Paid</td>
-                    <td>
-                      <a class="btn btn-sm btn-primary" href="">Detail</a>
-                    </td>
-                  </tr>
+                  <% } %>
                 </tbody>
               </table>
             </div>
@@ -203,5 +186,70 @@
         ><i class="bi bi-arrow-up"></i
       ></a>
     </div>
+    <!-- START VIEW User -->
+    <div id="viewUserModal" class="modal">
+      <div style="height: 500px; overflow-y: auto">
+        <div class="modal-content">
+          <span
+            class="close"
+            style="cursor: pointer; font-weight: bold; font-size: 2rem;"
+            onclick="closeViewUserModal()"
+            >&times;</span
+          >
+          <div class="mt-4">
+            <div class="card-body p-0">
+              <h4 class="p-3 mb-0">User Information</h4>
+              <div id="modalContent">
+                <!-- dynamically create the HTML for the modal form elements after fetching the product details -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END VIEW User -->
+
+       <!-- START EDIT User -->
+       <div id="editUserModal" class="modal">
+        <div class="modal-content">
+          <span
+            class="close"
+            style="cursor: pointer; font-weight: bold; font-size: 2rem;"
+            onclick="closeEditUserModal()"
+            >&times;</span
+          >
+          <h6 class="mb-0">Edit User Information</h6>
+          <form
+            id="editUserForm"
+            method="post"
+            action="/admin/editUser"
+          >
+            <div id="editUserFormContent">
+              <!-- dynamically create the HTML for the modal form elements after fetching the BenefUsericiary details -->
+            </div>
+            <div class="col-12 d-flex button_div">
+              <button style="background-color: #009cff" type="submit">
+                Submit
+              </button>
+              <button
+                style="background-color: #009cff"
+                type="button"
+                onclick="closeEditUserModal()"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- END EDIT User -->
+
+    
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- <script>
+     
+    </script> -->
+     <script src="../js/updateStatus.js"></script>
+     <script src="../js/userCrud.js"></script>
   </body>
 </html>

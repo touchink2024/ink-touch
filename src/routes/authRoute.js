@@ -1,28 +1,26 @@
 import { Router } from 'express';
+// import { validateData } from '../middlewares/index.js';
+import { signUpSchema } from '../schema/index.js';
 import {
   signUp,
   signUpPost,
   forgetPassword,
   forgetPasswordPost,
+  resetPassword,
+  resetPasswordPost,
   login,
   loginPost,
-  // login,
-  // forgotPassword,
-  // resetPassword,
 } from '../controllers/index.js';
 
 const authRoute = Router();
 
 authRoute.get('/register', signUp);
 authRoute.post('/register', signUpPost);
-authRoute.get('/forgetPassword', forgetPassword);
+authRoute.get('/forget-password', forgetPassword);
 authRoute.post('/forgetPassword', forgetPasswordPost);
+authRoute.get('/reset-password/:resetToken', resetPassword);
+authRoute.post('/resetPassword/:resetToken', resetPasswordPost);
 authRoute.get('/login', login);
-authRoute.get('/login', loginPost);
-
-// authRoute.post('/auth/verify-otp', verifyOtp);
-// authRoute.post('/auth/login', login);
-// authRoute.post('/auth/reset-password-request', forgotPassword);
-// authRoute.post('/auth/reset-password', resetPassword);
+authRoute.post('/login', loginPost);
 
 export { authRoute };

@@ -1,96 +1,275 @@
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { config } from '../configs/index.js';
 import { Conflict, HttpError } from '../middlewares/index.js';
 import { User } from '../models/index.js';
-// import { comparePassword, hashPassword } from '../utils/index.js';
 import { sendMail } from '../utils/index.js';
-import { asyncHandler, sendJsonResponse } from '../helper/index.js';
+import { asyncHandler } from '../helper/index.js';
+import {
+  signUpSchema,
+  resetPasswordSchema,
+  loginSchema,
+} from '../schema/index.js';
+import {
+  sanitizeInput,
+  sanitizeObject,
+  welcomeEmail,
+  forgetPasswordEmail,
+  resetPasswordEmail,
+  loginEmail,
+} from '../utils/index.js';
 
 export const signUp = (req, res) => {
   res.render('auth/register');
 };
 
 export const signUpPost = asyncHandler(async (req, res) => {
-  const {} = req.body;
-  const user = await User.findOne({
-    $or: [{ email: value.email }, { username: value.username }],
+  const sanitizedBody = sanitizeObject(req.body);
+  const { error, value } = signUpSchema.validate(sanitizedBody, {
+    abortEarly: false,
   });
 
-  if (admin) {
-    if (admin.email === value.email) {
-      throw new HttpError('Email already registered', 409);
-    }
-    if (admin.username === value.username) {
-      throw new HttpError('Username already registered', 409);
+  if (error) {
+    const errors = error.details.map((err) => ({
+      key: err.path[0],
+      msg: err.message,
+    }));
+    return res.status(400).json({ success: false, errors });
+  }
+
+  const { email, name, password } = value;
+  const user = await User.findOne({ email: email });
+  if (user) {
+    if (user.email === email) {
+      throw new Conflict('Email already exists');
     }
   }
-  const { firstName, lastName, email, username, number, password } = value;
 
   const newUser = new User({
-    firstName,
-    lastName,
     email,
-    username,
-    number,
+    name,
     password,
-    date_added: Date.now(),
   });
 
   await newUser.save();
-  const redirectUrl = `/auth/admin/login`;
+
+  // Use the email template
+  const emailContent = welcomeEmail(newUser);
+  await sendMail(emailContent);
+
+  const redirectUrl = `/auth/login`;
+  req.session.message = 'Registration successful';
   res
-    .status(201)
+    .status(200)
     .json({ redirectUrl, success: true, message: 'Registeration successful' });
 });
 
 export const forgetPassword = (req, res) => {
-  res.render('auth/forgetPassword');
+  res.render('auth/forget-password');
 };
 
-export const forgetPasswordPost = (req, res) => {
-  res.render('auth/forgetPassword');
-};
+export const forgetPasswordPost = asyncHandler(async (req, res) => {
+  const email = sanitizeInput(req.body.email);
 
-export const resetPassword = (req, res) => {
-  res.render('auth/resetPassword');
-};
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      errors: [{ key: 'email', msg: 'Email not found' }],
+    });
+  }
 
-export const resetPasswordPost = (req, res) => {
-  res.render('auth/resetPasswordPost');
-};
+  const resetToken = user.getResetPasswordToken();
+  await user.save();
+
+  const resetLink = `${
+    config.baseUrl || 'http://localhost:8080'
+  }/auth/reset-password/${resetToken}`;
+
+  const emailContent = forgetPasswordEmail(user, resetLink);
+
+  await sendMail(emailContent);
+
+  req.session.successMessage =
+    'A password reset link has been sent to your email';
+
+  return res.status(200).json({
+    success: true,
+    message: 'A password reset link has been sent to your email',
+  });
+});
+
+export const resetPassword = asyncHandler(async (req, res) => {
+  const { resetToken } = req.params;
+
+  const hashedResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  const user = await User.findOne({
+    resetPasswordToken: hashedResetToken,
+    resetPasswordExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    throw new HttpError(400, 'Invalid or expired token.');
+  }
+
+  res.render('auth/reset-password', { user });
+});
+
+export const resetPasswordPost = asyncHandler(async (req, res) => {
+  const sanitizedBody = sanitizeObject(req.body);
+  const { error, value } = resetPasswordSchema.validate(sanitizedBody, {
+    abortEarly: false,
+  });
+
+  if (error) {
+    const errors = error.details.map((err) => ({
+      key: err.path[0],
+      msg: err.message,
+    }));
+    return res.status(400).json({ success: false, errors });
+  }
+
+  const { password } = value;
+  const { resetToken } = req.params;
+
+  if (password.length < 6) {
+    return res.status(400).json({
+      success: false,
+      message: 'Password must be at least 6 characters.',
+    });
+  }
+
+  const hashedResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  const user = await User.findOne({
+    resetPasswordToken: hashedResetToken,
+    resetPasswordExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return res
+      .status(400)
+      .json({ success: false, message: 'Invalid or expired reset token.' });
+  }
+
+  user.password = password;
+  user.resetPasswordToken = null;
+  user.resetPasswordExpires = null;
+  await user.save();
+
+  const emailContent = resetPasswordEmail(user);
+  await sendMail(emailContent);
+
+  req.session.msge = 'Password reset successfully. Please log in';
+  const redirectUrl = `/auth/login`;
+  return res.status(200).json({
+    redirectUrl,
+    success: true,
+    msge: 'Password reset successfully. Please log in.',
+  });
+});
 
 export const login = (req, res) => {
-  res.render('auth/login');
+  const message = req.session.message;
+  const msge = req.session.msge;
+  req.session.message = null;
+  res.render('auth/login', { message, msge });
 };
-export const loginPost = (req, res) => {
-  res.render('auth/loginPost');
-};
 
-// export const verifyOtp = asyncHandler(async (req, res) => {
-//   const { otp, token } = req.body;
-//   const { message } = await authService.verifyEmail(token, otp);
-//   sendJsonResponse(res, 200, message);
-// });
+export const loginPost = asyncHandler(async (req, res) => {
+  const sanitizedBody = sanitizeObject(req.body);
+  const { error, value } = loginSchema.validate(sanitizedBody, {
+    abortEarly: false,
+  });
 
-// export const login = asyncHandler(async (req, res) => {
-//   const { email, password } = req.body;
-//   const { access_token, user } = await authService.login({ email, password });
-//   sendJsonResponse(res, 200, 'Login successful', user, access_token);
-// });
+  if (error) {
+    const errors = error.details.map((err) => ({
+      key: err.path[0],
+      msg: err.message,
+    }));
+    return res.status(400).json({ success: false, errors });
+  }
 
-// export const forgotPassword = asyncHandler(async (req, res) => {
-//   const { email } = req.body;
-//   const { message } = await authService.forgotPassword(email);
-//   sendJsonResponse(res, 200, message);
-// });
+  const { email, password } = value;
+  const user = await User.findOne({ email }).select('+password');
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid credentials. Incorrect email or password.',
+    });
+  }
 
-// export const resetPassword = asyncHandler(async (req, res) => {
-//   const token = req.query.token;
-//   const { new_password, confirm_password } = req.body;
-//   const { message } = await authService.resetPassword(
-//     token,
-//     new_password,
-//     confirm_password
-//   );
-//   sendJsonResponse(res, 200, message);
-// });
+  const isPasswordValid = await user.matchPassword(password);
+  if (!isPasswordValid) {
+    user.failedLoginAttempts += 1;
+    await user.save();
+
+    if (user.failedLoginAttempts >= config.maxFailedAttempt) {
+      user.accountLocked = true;
+      await user.save();
+      return res.status(423).json({
+        success: false,
+        message: 'Account locked. Contact support.',
+      });
+    }
+
+    return res.status(401).json({
+      success: false,
+      message: `Invalid credentials. ${
+        config.maxFailedAttempt - user.failedLoginAttempts
+      } attempt(s) left.`,
+    });
+  }
+
+  if (user.accountLocked || user.accountStatus === 'Locked') {
+    return res.status(423).json({
+      success: false,
+      message: 'Your account is locked. Contact support.',
+    });
+  }
+
+  user.failedLoginAttempts = 0;
+  await user.save();
+
+  if (!user.isVerified) {
+    return res.status(412).json({
+      success: false,
+      message: 'Kindly contact admin to verify your account before login.',
+    });
+  }
+
+  const access_token = jwt.sign(
+    { user_id: user.id, role: user.role },
+    config.accessToken,
+    {
+      expiresIn: config.accessTokenExpireTime,
+    }
+  );
+
+  res.cookie('token', access_token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'Strict',
+    // maxAge: config.accessTokenExpireTime,
+  });
+
+  let redirectUrl = user.role === 'Admin' ? '/admin/index' : '/user/index';
+
+  const emailContent = loginEmail(user);
+  await sendMail(emailContent);
+
+  return res.json({
+    success: true,
+    redirectUrl,
+    user: { id: user.id, email: user.email, role: user.role },
+    access_token,
+    message: 'Login successful',
+  });
+});

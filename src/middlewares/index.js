@@ -1,6 +1,5 @@
 import { authMiddleware } from './auth.js';
 import { checkRole } from './checkRole.js';
-import { validateData } from './validationMiddleware.js';
 import { appMiddleware } from './expressMiddlewares.js';
 import {
   BadRequest,
@@ -18,7 +17,6 @@ import {
 export {
   authMiddleware,
   checkRole,
-  validateData,
   appMiddleware,
   BadRequest,
   Conflict,

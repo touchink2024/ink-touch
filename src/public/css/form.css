@@ -28,7 +28,7 @@
 .container form {
   position: relative;
   margin-top: 16px;
-  min-height: 280px;
+  min-height: 380px;
   /* min-height: 490px; */
   background-color: #fff;
   overflow: hidden;

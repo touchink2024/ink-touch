@@ -48,86 +48,117 @@
 
   <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
-      <%- include (`../partials/header`); -%>
+      <%- include (`../partials/adminHeader`); -%>
 
       <!-- Content Start -->
       <div class="content">
         <!-- Navbar Start -->
-        <%- include (`../partials/nav`); -%>
+        <%- include (`../partials/adminNav`); -%>
         <!-- Navbar End -->
 
         <!-- Recent Sales Start -->
         <div class="container-fluid pt-4 px-4">
           <div class="bg-light text-center rounded p-4">
             <div class="container">
-              <header>Request Product</header>
+              <header>Add new User</header>
 
-              <form action="submit">
+              <form id="addUserForm" data-url="/admin/add-user" method="post">
                 <div class="form first">
                   <div class="details personal">
                     <div class="fields">
                       <div class="input-field">
-                        <label>Ref No</label>
-                        <input type="text" readonly />
+                        <label>Name</label>
+                        <input
+                          type="text"
+                          name="name"
+                          placeholder="Your name"
+                        />
+                        <div id="nameError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
-                        <label>Operator</label>
-                        <input type="text" readonly />
+                        <label>email</label>
+                        <input
+                          type="email"
+                          name="email"
+                          placeholder="Your email"
+                        />
+                        <div id="emailError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
-                        <label for="category">Category</label>
-                        <select id="category" name="category">
-                          <option value="" disabled selected>
-                            Select a category
-                          </option>
-                          <option value="Flex">Flex</option>
-                          <option value="Sav">Sav</option>
-                        </select>
+                        <label>Number</label>
+                        <input
+                          type="text"
+                          name="phone_number"
+                          placeholder="Enter mobile number"
+                        />
+                        <div id="phone_numberError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
-                        <label for="size">Size</label>
-                        <select id="size" name="size">
-                          <option value="" disabled selected>
-                            Select a size
-                          </option>
-                        </select>
+                        <label>Address</label>
+                        <input
+                          type="text"
+                          name="address"
+                          placeholder="Your address"
+                        />
+                        <div id="addressError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
-                        <label>Materials</label>
-                        <input type="test" placeholder="Enter mobile number" />
+                        <label>City</label>
+                        <input
+                          type="text"
+                          name="city"
+                          placeholder="Your city"
+                        />
+                        <div id="cityError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
-                        <label>Quantity</label>
-                        <input type="number" placeholder="Enter your gender" />
+                        <label>State</label>
+                        <input
+                          type="text"
+                          name="state"
+                          placeholder="Your state"
+                        />
+                        <div id="stateError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
-                        <label>Narration</label>
-                        <input type="text" placeholder="Enter your ccupation" />
+                        <label>Password</label>
+                        <input
+                          type="password"
+                          name="password"
+                          placeholder="Your password"
+                        />
+                        <div id="passwordError" class="text-danger"></div>
+                      </div>
+
+                      <div class="input-field">
+                        <label>Confirm Password</label>
+                        <input
+                          type="password"
+                          name="confirmPassword"
+                          placeholder="Confirm password"
+                        />
+                        <div
+                          id="confirmPasswordError"
+                          class="text-danger"
+                        ></div>
                       </div>
 
                       <div
                         class="input-field"
                         style="margin-top: 20px !important"
                       >
-                        <button class="btnText" type="submit">
+                        <button id="subBtns" class="btnText" type="submit">
                           <span class="btnText">Submit</span>
                         </button>
                       </div>
                     </div>
                   </div>
-
-                  <!-- <div class="details ID">
-                    <button class="nextBtn">
-                      <span class="btnText">Next</span>
-                      <i class="uil uil-navigator"></i>
-                    </button>
-                  </div> -->
                 </div>
               </form>
             </div>
@@ -136,7 +167,7 @@
         <!-- Recent Sales End -->
 
         <!-- Footer Start -->
-        <%- include (`../partials/footer`); -%>
+        <%- include (`../partials/adminFooter`); -%>
         <!-- Footer End -->
       </div>
       <!-- Content End -->
@@ -147,54 +178,78 @@
       ></a>
     </div>
     <script>
-      document
-        .getElementById('category')
-        .addEventListener('change', function () {
-          const sizeSelect = document.getElementById('size');
-          const selectedCategory = this.value;
+      document.addEventListener('DOMContentLoaded', function () {
+        const addUserForm = document.getElementById('addUserForm');
 
-          // Clear the existing options
-          sizeSelect.innerHTML =
-            '<option value="" disabled selected>Select a size</option>';
+        addUserForm.addEventListener('submit', async function (event) {
+          event.preventDefault();
 
-          let sizes = [];
+          const addUserUrl = addUserForm.getAttribute('data-url');
+          const submitButton = document.getElementById('subBtns');
 
-          if (selectedCategory === 'Flex') {
-            sizes = [
-              '3 ft',
-              '4 ft',
-              '5 ft',
-              '6 ft',
-              '7 ft',
-              '8 ft',
-              '10 ft',
-              'Blacklit 10 ft',
-              'Mesh 10 ft',
-              'Relf flex 10 ft',
-            ];
-          } else if (selectedCategory === 'Sav') {
-            sizes = [
-              '4 ft',
-              '5 ft',
-              '4/5 ft',
-              'Relf sav 4/5 ft',
-              'pvc',
-              'Clear sticker 4&5 ft',
-              'Paper 3 ft',
-              'Paper 4 ft',
-              'Paper 5 ft',
-              'Fabric 4 ft',
-              'Fabric 5 ft',
-            ];
+          submitButton.innerHTML =
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
+          submitButton.disabled = true;
+
+          try {
+            const formData = Object.fromEntries(new FormData(addUserForm));
+            const response = await fetch(addUserUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+            if (response.ok && data.success) {
+              window.location.href = data.redirectUrl;
+            } else {
+              if (data.message) {
+                const generalErrorElement =
+                  document.getElementById('generalError');
+                if (generalErrorElement) {
+                  generalErrorElement.textContent = data.message;
+                }
+              }
+
+              const errors = data.errors || [];
+              errors.forEach((error) => {
+                const errorElement = document.getElementById(
+                  `${error.key}Error`
+                );
+                if (errorElement) {
+                  errorElement.textContent = error.msg;
+                }
+              });
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while processing your request.');
+          } finally {
+            submitButton.innerHTML = 'Sign Up';
+            submitButton.disabled = false;
           }
+        });
 
-          sizes.forEach(function (size) {
-            const option = document.createElement('option');
-            option.value = size.toLowerCase();
-            option.textContent = size;
-            sizeSelect.appendChild(option);
+        const inputFields = document.querySelectorAll('input');
+        inputFields.forEach((inputField) => {
+          inputField.addEventListener('input', () => {
+            const errorElement = document.getElementById(
+              `${inputField.name}Error`
+            );
+            if (errorElement) {
+              errorElement.innerText = '';
+            }
+
+            const generalErrorElement = document.getElementById('generalError');
+            if (generalErrorElement) {
+              generalErrorElement.innerText = '';
+            }
           });
         });
+      });
     </script>
+    <!-- <script src="../js/updateStatus.js"></script> -->
   </body>
 </html>

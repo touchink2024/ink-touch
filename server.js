@@ -30,11 +30,11 @@ app.use(
   })
 );
 
-app.use(appMiddleware);
 app.use(morgan('tiny'));
 app.disable('x-powered-by');
 
 app.use(router);
+app.use(appMiddleware);
 
 //Use the ErrorHandler middleware as the last middleware
 app.use(errorHandler, routeNotFound);

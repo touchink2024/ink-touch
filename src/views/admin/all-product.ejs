@@ -8,7 +8,7 @@
     <meta content="" name="description" />
 
     <!-- Favicon -->
-    <link href="../../img/favi.png" rel="icon" />
+    <link href="../img/favi.png" rel="icon" />
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -30,19 +30,20 @@
 
     <!-- Libraries Stylesheet -->
     <link
-      href="../../lib/owlcarousel/assets/owl.carousel.min.css"
+      href="../lib/owlcarousel/assets/owl.carousel.min.css"
       rel="stylesheet"
     />
     <link
-      href="../../lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
+      href="../lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css"
       rel="stylesheet"
     />
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="../../css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Template Stylesheet -->
-    <link href="../../css/style.css" rel="stylesheet" />
+    <link href="../css/style.css" rel="stylesheet" />
+    <link href="../css/viewBtn.css" rel="stylesheet" />
   </head>
 
   <body>
@@ -112,79 +113,56 @@
             <div class="d-flex align-items-center justify-content-between mb-4">
               <h6 class="mb-0">All Products</h6>
             </div>
+
             <div class="table-responsive">
               <table
                 class="table text-start align-middle table-bordered table-hover mb-0"
               >
                 <thead>
-                  <tr class="text-dark">
-                    <th scope="col">
-                      <input class="form-check-input" type="checkbox" />
-                    </th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Invoice</th>
-                    <th scope="col">Customer</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Status</th>
+                  <tr class="text-dark" style="text-align: center">
+                    <th scope="col">Category</th>
+                    <th scope="col">Size</th>
+                    <th scope="col">Materials</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Narration</th>
                     <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>01 Jan 2045</td>
-                    <td>INV-0123</td>
-                    <td>Jhon Doe</td>
-                    <td>$123</td>
-                    <td>Paid</td>
+                  <% if (product.length > 0) { %> <% product.forEach(prod => {
+                  %>
+                  <tr class="center">
+                    <td><%= prod.category %></td>
+                    <td><%= prod.size %></td>
+                    <td><%= prod.material %></td>
+                    <td><%= prod.quantity %></td>
+                    <td><%= prod.narration %></td>
+
                     <td>
-                      <a class="btn btn-sm btn-primary" href="">Detail</a>
+                      <button
+                        type="button"
+                        class="btn btn-warning"
+                        data-product-id="<%= prod._id %>"
+                        onclick="showEditProductModal(this)"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-danger"
+                        data-product-id="<%= prod._id %>"
+                        data-url="/admin/product"
+                        onclick="showDeleteProductModal(this)"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
+                  <% }); %> <% } else { %>
                   <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>01 Jan 2045</td>
-                    <td>INV-0123</td>
-                    <td>Jhon Doe</td>
-                    <td>$123</td>
-                    <td>Paid</td>
-                    <td>
-                      <a class="btn btn-sm btn-primary" href="">Detail</a>
-                    </td>
+                    <td colspan="9" class="text-center">No Product found.</td>
                   </tr>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>01 Jan 2045</td>
-                    <td>INV-0123</td>
-                    <td>Jhon Doe</td>
-                    <td>$123</td>
-                    <td>Paid</td>
-                    <td>
-                      <a class="btn btn-sm btn-primary" href="">Detail</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>01 Jan 2045</td>
-                    <td>INV-0123</td>
-                    <td>Jhon Doe</td>
-                    <td>$123</td>
-                    <td>Paid</td>
-                    <td>
-                      <a class="btn btn-sm btn-primary" href="">Detail</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>01 Jan 2045</td>
-                    <td>INV-0123</td>
-                    <td>Jhon Doe</td>
-                    <td>$123</td>
-                    <td>Paid</td>
-                    <td>
-                      <a class="btn btn-sm btn-primary" href="">Detail</a>
-                    </td>
-                  </tr>
+                  <% } %>
                 </tbody>
               </table>
             </div>
@@ -203,5 +181,46 @@
         ><i class="bi bi-arrow-up"></i
       ></a>
     </div>
+
+    <!-- START EDIT User -->
+    <div id="editProductModal" class="modal">
+      <div class="modal-content">
+        <span
+          class="close"
+          style="cursor: pointer; font-weight: bold; font-size: 2rem"
+          onclick="closeEditProductModal()"
+          >&times;</span
+        >
+
+        <h6 class="p-3 mb-0">Edit User Information</h6>
+        <form
+          id="editProductForm"
+          method="post"
+          action="/admin/editProduct/${prod._id}"
+        >
+          <div id="editProductFormContent">
+            <!-- dynamically create the HTML for the modal form elements after fetching the BenefUsericiary details -->
+          </div>
+          <div class="col-12 d-flex button_div">
+            <button style="background-color: #009cff" type="submit">
+              Submit
+            </button>
+            <button
+              style="background-color: #009cff"
+              type="button"
+              onclick="closeEditProductModal()"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END EDIT User -->
+    <script src="../js/productCrud.js"></script>
+    <script
+      type="text/javascript"
+      src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"
+    ></script>
   </body>
 </html>

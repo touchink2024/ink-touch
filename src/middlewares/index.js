@@ -1,5 +1,4 @@
-import { authMiddleware } from './auth.js';
-import { checkRole } from './checkRole.js';
+import { verifyUserToken, getAdminById, getUserById } from './auth.js';
 import { appMiddleware } from './expressMiddlewares.js';
 import {
   BadRequest,
@@ -15,8 +14,9 @@ import {
 } from './error.js';
 
 export {
-  authMiddleware,
-  checkRole,
+  verifyUserToken,
+  getAdminById,
+  getUserById,
   appMiddleware,
   BadRequest,
   Conflict,

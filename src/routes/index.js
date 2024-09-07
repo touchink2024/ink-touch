@@ -9,7 +9,6 @@ import { appMiddleware } from '../middlewares/index.js';
 //middlewares
 router.use(appMiddleware);
 
-// Mount the admin authentication routes under /auth/admin
 router.use('/auth', authRoute);
 router.use('/user', userRoute);
 router.use('/admin', adminRoute);

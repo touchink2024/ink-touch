@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loginUrl = loginForm.getAttribute('data-url');
 
-    // Clear any previous error messages
     document.getElementById('emailError').textContent = '';
     document.getElementById('passwordError').textContent = '';
     const generalError = document.getElementById('generalError');
@@ -35,10 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const responseData = await response.json();
 
       if (response.ok && responseData.success) {
-        // Redirect on success
         window.location.href = responseData.redirectUrl;
       } else {
-        // Check if there are specific field validation errors
         const errors = responseData.errors || [];
         if (errors.length > 0) {
           errors.forEach((error) => {
@@ -48,13 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           });
         } else if (responseData.message) {
-          // Handle general error message (e.g., invalid credentials)
           const generalError = document.getElementById('generalError');
           if (generalError) {
             generalError.textContent = responseData.message;
             generalError.style.display = 'block';
           } else {
-            alert(responseData.message); // Fallback if no general error element
+            alert(responseData.message);
           }
         }
       }
@@ -67,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Clear error messages when input changes
   const inputFields = document.querySelectorAll('input');
   inputFields.forEach((inputField) => {
     inputField.addEventListener('input', () => {

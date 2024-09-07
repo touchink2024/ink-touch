@@ -21,19 +21,43 @@
     </a>
     <div class="d-flex align-items-center ms-4 mb-4">
       <div class="position-relative">
-        <img
-          class="rounded-circle"
-          src="../img/user.jpg"
-          alt=""
-          style="width: 40px; height: 40px"
+        <label for="profile-picture-input">
+          <!-- Check if the admin object has an image -->
+
+          <% if (user && user.image && user.image.imageUrl) { %>
+          <img
+            class="rounded-circle p-1"
+            src="<%= user.image.imageUrl %>"
+            alt="Image"
+            width="80"
+            height="80"
+          />
+          <% } else { %>
+          <div style="position: relative; cursor: pointer">
+            <img
+              class="rounded-circle p-1 bg-warning"
+              style="background-color: #009cff !important"
+              src="https://bootdey.com/img/Content/avatar/avatar5.png"
+              alt="image"
+              width="60"
+              height="60"
+            />
+          </div>
+          <% } %>
+        </label>
+
+        <input
+          type="file"
+          name="image"
+          id="profile-picture-input"
+          style="display: none"
+          data-url="/admin/uploadAdminImage"
         />
-        <div
-          class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"
-        ></div>
       </div>
+
       <div class="ms-3">
-        <h6 class="mb-0">Jhon Doe</h6>
-        <span>Admin</span>
+        <h6 class="mb-0"><%-user.name %></h6>
+        <span><%-user.role %></span>
       </div>
     </div>
     <div class="navbar-nav w-100">
@@ -52,15 +76,6 @@
       </div>
       <div class="nav-item dropdown">
         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
-          ><i class="fa fa-laptop me-2"></i>Admins</a
-        >
-        <div class="dropdown-menu bg-transparent border-0">
-          <a href="/admin/add-admin" class="dropdown-item">add Admin</a>
-          <a href="/admin/all-admin" class="dropdown-item">All Admin</a>
-        </div>
-      </div>
-      <div class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
           ><i class="fa fa-laptop me-2"></i>Products</a
         >
         <div class="dropdown-menu bg-transparent border-0">
@@ -71,8 +86,11 @@
       <a href="/admin/request-product" class="nav-item nav-link"
         ><i class="fa fa-th me-2"></i>Request</a
       >
-      <a href="/admin/profile" class="nav-item nav-link"
-        ><i class="fa fa-keyboard me-2"></i>Profile</a
+      <a href="/admin/all-Wastage" class="nav-item nav-link"
+        ><i class="fa fa-th me-2"></i>Wastage</a
+      >
+      <a href="/admin/all-log" class="nav-item nav-link"
+        ><i class="fa fa-th me-2"></i>Log</a
       >
       <a href="/admin/log-out" class="nav-item nav-link"
         ><i class="fa fa-keyboard me-2"></i>Log out</a

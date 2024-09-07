@@ -60,9 +60,14 @@
         <div class="container-fluid pt-4 px-4">
           <div class="bg-light text-center rounded p-4">
             <div class="container">
+              <div
+                id="generalError"
+                class="alert alert-danger"
+                style="display: none"
+              ></div>
               <header>Add New Product</header>
 
-              <form action="/admin/add-product" method="post">
+              <form id="addProductForm" data-url="/admin/add-product">
                 <div class="form first">
                   <div class="details personal">
                     <div class="fields">
@@ -75,6 +80,7 @@
                           <option value="Flex">Flex</option>
                           <option value="Sav">Sav</option>
                         </select>
+                        <div id="categoryError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
@@ -84,32 +90,45 @@
                             Select a size
                           </option>
                         </select>
+                        <div id="sizeError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
                         <label>Materials</label>
-                        <input type="test" placeholder="Enter mobile number" />
+                        <input
+                          type="text"
+                          name="material"
+                          placeholder="Enter material"
+                        />
+                        <div id="materialError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
                         <label>Quantity</label>
-                        <input type="number" placeholder="Enter your gender" />
+                        <input
+                          type="number"
+                          name="quantity"
+                          placeholder="Enter quantity"
+                        />
+                        <div id="quantityError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
                         <label>Narration</label>
                         <input
                           type="text"
+                          name="narration"
                           maxlength="250"
-                          placeholder="Enter your ccupation"
+                          placeholder="Enter your narration"
                         />
+                        <div id="narrationError" class="text-danger"></div>
                       </div>
 
                       <div
                         class="input-field"
                         style="margin-top: 20px !important"
                       >
-                        <button class="btnText" type="submit">
+                        <button id="sbtns" class="btnText" type="submit">
                           <span class="btnText">Submit</span>
                         </button>
                       </div>
@@ -135,5 +154,6 @@
     </div>
 
     <script src="../js/add-product.js"></script>
+    <script src="../mail/add-product.js"></script>
   </body>
 </html>

@@ -60,6 +60,11 @@
         <div class="container-fluid pt-4 px-4">
           <div class="bg-light text-center rounded p-4">
             <div class="container">
+              <div
+                id="generalError"
+                class="alert alert-danger"
+                style="display: none"
+              ></div>
               <header>Add new User</header>
 
               <form id="addUserForm" data-url="/admin/add-user" method="post">
@@ -148,6 +153,16 @@
                           class="text-danger"
                         ></div>
                       </div>
+                      <div class="input-field">
+                        <label>Role</label>
+                        <select name="role">
+                          <option value="">Select Role</option>
+                          <option value="User">User</option>
+                          <option value="Admin">Admin</option>
+                          <option value="Super_Admin">Super Admin</option>
+                        </select>
+                        <div id="roleError" class="text-danger"></div>
+                      </div>
 
                       <div
                         class="input-field"
@@ -177,79 +192,7 @@
         ><i class="bi bi-arrow-up"></i
       ></a>
     </div>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        const addUserForm = document.getElementById('addUserForm');
 
-        addUserForm.addEventListener('submit', async function (event) {
-          event.preventDefault();
-
-          const addUserUrl = addUserForm.getAttribute('data-url');
-          const submitButton = document.getElementById('subBtns');
-
-          submitButton.innerHTML =
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
-          submitButton.disabled = true;
-
-          try {
-            const formData = Object.fromEntries(new FormData(addUserForm));
-            const response = await fetch(addUserUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(formData),
-            });
-
-            const data = await response.json();
-            if (response.ok && data.success) {
-              window.location.href = data.redirectUrl;
-            } else {
-              if (data.message) {
-                const generalErrorElement =
-                  document.getElementById('generalError');
-                if (generalErrorElement) {
-                  generalErrorElement.textContent = data.message;
-                }
-              }
-
-              const errors = data.errors || [];
-              errors.forEach((error) => {
-                const errorElement = document.getElementById(
-                  `${error.key}Error`
-                );
-                if (errorElement) {
-                  errorElement.textContent = error.msg;
-                }
-              });
-            }
-          } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred while processing your request.');
-          } finally {
-            submitButton.innerHTML = 'Sign Up';
-            submitButton.disabled = false;
-          }
-        });
-
-        const inputFields = document.querySelectorAll('input');
-        inputFields.forEach((inputField) => {
-          inputField.addEventListener('input', () => {
-            const errorElement = document.getElementById(
-              `${inputField.name}Error`
-            );
-            if (errorElement) {
-              errorElement.innerText = '';
-            }
-
-            const generalErrorElement = document.getElementById('generalError');
-            if (generalErrorElement) {
-              generalErrorElement.innerText = '';
-            }
-          });
-        });
-      });
-    </script>
-    <!-- <script src="../js/updateStatus.js"></script> -->
+    <script src="../mail/addUser.js"></script>
   </body>
 </html>

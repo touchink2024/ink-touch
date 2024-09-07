@@ -27,17 +27,14 @@ const userSchema = new mongoose.Schema(
     },
     address: {
       type: String,
-      select: false,
       trim: true,
     },
     city: {
       type: String,
-      select: false,
       trim: true,
     },
     state: {
       type: String,
-      select: false,
       trim: true,
     },
     password: {
@@ -48,7 +45,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       trim: true,
-      enum: ['User', 'Admin'],
+      enum: ['User', 'Admin', 'Super_Admin'],
       default: 'User',
     },
     accountStatus: {
@@ -56,9 +53,11 @@ const userSchema = new mongoose.Schema(
       enum: ['Locked', 'Active'],
       default: 'Active',
     },
+    image: { imageId: String, imageUrl: String },
     failedLoginAttempts: { type: Number, default: 0 },
     accountLocked: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
+    verificationCode: { type: String },
     resetPasswordToken: { type: String, default: null },
     resetPasswordExpires: { type: Date, default: null },
   },

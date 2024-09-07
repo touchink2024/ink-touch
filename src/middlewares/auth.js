@@ -2,130 +2,117 @@ import jwt from 'jsonwebtoken';
 import { config } from '../configs/index.js';
 import { log } from '../utils/index.js';
 import { User } from '../models/index.js';
-import { ServerError } from './index.js';
 
-export const authMiddleware = async (req, res, next) => {
+// verifyUserToken middleware
+const verifyUserToken = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
+    // Retrieve access token from the session
+    const accessToken = req.session.accessToken;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({
-        status_code: '401',
-        message: 'Invalid token',
-      });
+    if (!accessToken) {
+      console.log('No access token found');
+      req.session.authErrorMessage = 'Please sign in to access this page';
+      return res.redirect('/auth/login');
     }
 
-    const token = authHeader.split(' ')[1];
-    if (!token) {
-      return res.status(401).json({
-        status_code: '401',
-        message: 'Invalid token',
-      });
-    }
-
-    // // Retrieve the token from cookies
-    // const token = req.cookies.token;
-
-    // if (!token) {
-    //   return res.status(401).json({
-    //     status_code: '401',
-    //     message: 'Invalid token',
-    //   });
-    // }
-
-    jwt.verify(token, config.accessToken, async (err, decoded) => {
-      if (err || !decoded) {
-        return res.status(401).json({
-          status_code: '401',
-          message: 'Invalid token',
-        });
+    // Verify the access token
+    jwt.verify(accessToken, config.jwtSecret, (err, decodedAccessToken) => {
+      if (err) {
+        console.log('Invalid access token');
+        req.session.authErrorMessage = 'Please sign in to access this page';
+        return res.redirect('/auth/login');
+      } else {
+        // Access token is valid
+        req.user = decodedAccessToken;
+        next(); // Continue to the next middleware or route handler
       }
-
-      const { user_id } = decoded;
-
-      const user = await User.findOne({ id: user_id });
-      if (!user) {
-        return res.status(401).json({
-          status_code: '401',
-          message: 'Invalid token',
-        });
-      }
-
-      req.user = {
-        email: user.email,
-        user_id: user.id,
-        role: user.role,
-      };
-
-      next();
     });
   } catch (error) {
     log.error(error);
-    throw new ServerError('INTERNAL_SERVER_ERROR');
+    req.session.authErrorMessage = 'An error occurred. Please try again.';
+    return res.redirect('/auth/login');
   }
 };
 
-// const verifyUserToken = async (req, res, next) => {
-//   try {
-//     const userAccessToken = req.cookies.userAccessToken;
-//     const userRefreshToken = req.cookies.userRefreshToken;
+// Middleware to verify token and redirect based on role
+const verifyToken = (role) => (req, res, next) => {
+  const accessToken = req.session.accessToken;
 
-//     if (!userAccessToken || !userRefreshToken) {
-//       req.session.authErrorMessage = 'Please sign in to access this page';
-//       return res.redirect('/auth/login');
-//     }
+  if (accessToken) {
+    jwt.verify(accessToken, config.jwtSecret, (err, decodedToken) => {
+      if (err) {
+        next(); // Invalid token, proceed to the next middleware or route
+      } else {
+        // Token is valid, redirect based on role
+        if (decodedToken.role === role) {
+          next(); // User has the correct role, proceed to the next middleware or route
+        } else {
+          return res.status(403).json({ message: 'Access denied' });
+        }
+      }
+    });
+  } else {
+    next(); // No token, proceed to the next middleware or route
+  }
+};
 
-//     const checkIfBlacklisted = await Blacklist.findOne({
-//       token: { $in: [userAccessToken, userRefreshToken] },
-//     });
-//     if (checkIfBlacklisted) {
-//       req.session.authErrorMessage = 'This session has expired. Please login';
-//       return res.redirect('/auth/login');
-//     }
+// Middleware for checking if specific user roles are logged in
+const isUserSignedIn = verifyToken('User');
+const isAdminSignedIn = verifyToken('Admin');
 
-//     // Verify access token
-//     jwt.verify(
-//       userAccessToken,
-//       config.jwtSecret,
-//       (err, decodedUserAccessToken) => {
-//         if (err) {
-//           // If access token verification fails, check refresh token
-//           jwt.verify(
-//             userRefreshToken,
-//             config.jwtSecret,
-//             async (err, decodedUserRefreshToken) => {
-//               if (err) {
-//                 // Both tokens are invalid, return unauthorized
-//                 req.session.authErrorMessage =
-//                   'Please sign in to access this page';
-//                 return res.redirect('/auth/login');
-//               } else {
-//                 // Refresh token is valid, generate a new access token
-//                 const newUserAccessToken = jwt.sign(
-//                   { id: decodedUserRefreshToken.id, role: 'User' },
-//                   config.jwtSecret,
-//                   { expiresIn: config.userAccessTokenExpireTime }
-//                 );
-//                 // Set new access token in cookies
-//                 res.cookie('userAccessToken', newUserAccessToken, {
-//                   httpOnly: true,
-//                   secure: true,
-//                 });
-//                 req.user = decodedUserRefreshToken;
-//                 next();
-//               }
-//             }
-//           );
-//         } else {
-//           // Access token is valid
-//           req.user = decodedUserAccessToken;
-//           next();
-//         }
-//       }
-//     );
-//   } catch (error) {
-//     log.error(error);
-//     req.session.authErrorMessage = 'An error occurred. Please try again.';
-//     return res.redirect('/auth/login');
-//   }
-// };
+const getAdminById = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.role !== 'Admin' && user.role !== 'Super_Admin') {
+      return res
+        .status(403)
+        .json({ message: 'User is not an admin or super admin' });
+    }
+
+    if (user.image && user.image.data) {
+      user.imageBase64 = user.image.data.toString('base64');
+    }
+
+    req.currentUser = user;
+    next();
+  } catch (error) {
+    log.error(error);
+    next(error);
+  }
+};
+
+const getUserById = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.role !== 'User') {
+      return res
+        .status(403)
+        .json({ message: 'Only user can access this page' });
+    }
+
+    if (user.image && user.image.data) {
+      user.imageBase64 = user.image.data.toString('base64');
+    }
+
+    req.currentUser = user;
+    next();
+  } catch (error) {
+    log.error(error);
+    next(error);
+  }
+};
+export {
+  verifyUserToken,
+  isUserSignedIn,
+  isAdminSignedIn,
+  getAdminById,
+  getUserById,
+};

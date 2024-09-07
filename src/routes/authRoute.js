@@ -4,6 +4,8 @@ import { signUpSchema } from '../schema/index.js';
 import {
   signUp,
   signUpPost,
+  verifyEmail,
+  verifyEmailPost,
   forgetPassword,
   forgetPasswordPost,
   resetPassword,
@@ -16,6 +18,8 @@ const authRoute = Router();
 
 authRoute.get('/register', signUp);
 authRoute.post('/register', signUpPost);
+authRoute.get('/verify-email', verifyEmail);
+authRoute.post('/verify-email', verifyEmailPost);
 authRoute.get('/forget-password', forgetPassword);
 authRoute.post('/forgetPassword', forgetPasswordPost);
 authRoute.get('/reset-password/:resetToken', resetPassword);

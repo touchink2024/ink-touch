@@ -1,16 +1,18 @@
 import {
   signUp,
   signUpPost,
+  verifyEmail,
+  verifyEmailPost,
   forgetPassword,
   forgetPasswordPost,
   resetPassword,
   resetPasswordPost,
   login,
   loginPost,
-  // verifyOtp,
 } from './authController.js';
 import {
   userIndex,
+  uploadUserImage,
   request,
   allRequest,
   wastage,
@@ -20,6 +22,7 @@ import {
 
 import {
   adminIndex,
+  uploadAdminImage,
   allUser,
   addUser,
   addUserPost,
@@ -27,12 +30,14 @@ import {
   viewUser,
   editUser,
   editUserPost,
+  deleteUser,
   allProduct,
   addProduct,
   addProductPost,
+  editProduct,
+  editProductPost,
+  deleteProduct,
   allWastages,
-  addAdmin,
-  allAdmin,
   adminProfile,
   requestProduct,
 } from './adminController.js';
@@ -41,6 +46,8 @@ export {
   //auth
   signUp,
   signUpPost,
+  verifyEmail,
+  verifyEmailPost,
   forgetPassword,
   forgetPasswordPost,
   resetPassword,
@@ -49,6 +56,7 @@ export {
   loginPost,
   //user
   userIndex,
+  uploadUserImage,
   request,
   allRequest,
   wastage,
@@ -56,6 +64,7 @@ export {
   profile,
   //admin
   adminIndex,
+  uploadAdminImage,
   allUser,
   addUser,
   addUserPost,
@@ -63,12 +72,14 @@ export {
   viewUser,
   editUser,
   editUserPost,
+  deleteUser,
   allProduct,
   addProduct,
   addProductPost,
+  editProduct,
+  editProductPost,
+  deleteProduct,
   allWastages,
   requestProduct,
-  addAdmin,
-  allAdmin,
   adminProfile,
 };

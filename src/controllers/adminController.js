@@ -1,8 +1,8 @@
 'use strict';
 import jwt from 'jsonwebtoken';
-import { config } from '../configs/index.js';
+import { config, cloudinary } from '../configs/index.js';
 import { Conflict, HttpError } from '../middlewares/index.js';
-import { User } from '../models/index.js';
+import { User, Product } from '../models/index.js';
 import { sendMail } from '../utils/index.js';
 import { asyncHandler } from '../helper/index.js';
 import { productSchema, addUserSchema } from '../schema/index.js';
@@ -14,11 +14,39 @@ import {
 } from '../utils/index.js';
 
 export const adminIndex = (req, res) => {
-  res.render('admin/index');
+  const user = req.currentUser;
+  res.render('admin/index', { user });
 };
 
+export const uploadAdminImage = asyncHandler(async (req, res) => {
+  const user = req.currentUser;
+
+  const file = req.file;
+  if (!file) {
+    return res.status(400).json({
+      success: false,
+      message: 'No file uploaded.',
+    });
+  }
+
+  const cloudinaryResult = await cloudinary.uploader.upload(file.path);
+
+  const image = {
+    imageId: cloudinaryResult.public_id,
+    imageUrl: cloudinaryResult.secure_url,
+  };
+  user.image = image;
+  await user.save();
+  const callbackUrl = '/admin/index';
+  return res.status(200).json({
+    callbackUrl,
+    success: true,
+    message: 'Image uploaded successfully',
+  });
+});
+
 export const allUser = (req, res) => {
-  const admin = req.currentAdmin;
+  const user = req.currentUser;
 
   if (!res.paginatedResults) {
     return res.status(404).json({
@@ -29,7 +57,7 @@ export const allUser = (req, res) => {
   const { results, currentPage, totalPages } = res.paginatedResults;
 
   res.render('admin/all-user', {
-    admin,
+    user,
     users: results,
     currentPage,
     totalPages,
@@ -37,7 +65,8 @@ export const allUser = (req, res) => {
 };
 
 export const addUser = (req, res) => {
-  res.render('admin/add-user');
+  const user = req.currentUser;
+  res.render('admin/add-user', { user });
 };
 
 export const addUserPost = asyncHandler(async (req, res) => {
@@ -54,7 +83,8 @@ export const addUserPost = asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, errors });
   }
 
-  const { name, email, phone_number, address, city, state, password } = value;
+  const { name, email, phone_number, address, city, state, password, role } =
+    value;
   const user = await User.findOne({
     $or: [{ email: email }, { phone_number: phone_number }],
   });
@@ -76,6 +106,7 @@ export const addUserPost = asyncHandler(async (req, res) => {
     city,
     state,
     password,
+    role,
   });
 
   await newUser.save();
@@ -144,6 +175,12 @@ export const editUser = asyncHandler(async (req, res) => {
 export const editUserPost = asyncHandler(async (req, res) => {
   const userId = req.params.userId;
 
+  if (!userId) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found',
+    });
+  }
   const { name, email, phone_number, address, city, state, role } = req.body;
 
   const updatedUser = await User.findByIdAndUpdate(
@@ -162,6 +199,13 @@ export const editUserPost = asyncHandler(async (req, res) => {
     { new: true }
   );
 
+  if (!updatedUser) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found or update failed',
+    });
+  }
+
   const redirectUrl = '/admin/all-user';
   res.status(201).json({
     user: updatedUser,
@@ -171,8 +215,28 @@ export const editUserPost = asyncHandler(async (req, res) => {
   });
 });
 
+export const deleteUser = asyncHandler(async (req, res) => {
+  const user = req.currentUser;
+  const users = await User.findById(req.params.userId);
+  if (!users) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found',
+    });
+  }
+  await User.findByIdAndDelete(req.params.userId);
+  const redirectUrl = '/admin/all-user';
+  res.status(201).json({
+    redirectUrl,
+    success: true,
+    user,
+    message: 'user deleted successfully',
+  });
+});
+
 export const addProduct = (req, res) => {
-  res.render('admin/add-product');
+  const user = req.currentUser;
+  res.render('admin/add-product', { user });
 };
 
 export const addProductPost = asyncHandler(async (req, res) => {
@@ -189,29 +253,133 @@ export const addProductPost = asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, errors });
   }
 
-  const { email, name, password } = value;
+  const { category, size, material, quantity, narration } = value;
+
+  const existingProduct = await Product.findOne({
+    category: category,
+    size: size,
+    material: material,
+  });
+
+  if (existingProduct) {
+    throw new Conflict('Product already exists');
+  }
+
+  const newProduct = new Product({
+    category,
+    size,
+    material,
+    quantity,
+    narration,
+  });
+
+  await newProduct.save();
+
+  const redirectUrl = `/admin/all-product`;
+  res
+    .status(200)
+    .json({ redirectUrl, success: true, message: 'Product added successful' });
 });
 
 export const allProduct = (req, res) => {
-  res.render('admin/all-product');
+  const user = req.currentUser;
+  if (!res.paginatedResults) {
+    return res.status(404).json({
+      success: false,
+      message: 'Paginated results not found',
+    });
+  }
+  const { results, currentPage, totalPages } = res.paginatedResults;
+
+  res.render('admin/all-product', {
+    user,
+    product: results,
+    currentPage,
+    totalPages,
+  });
 };
+
+export const editProduct = asyncHandler(async (req, res) => {
+  const proId = req.params.Id;
+  const editProductInfo = await Product.findById(proId);
+  if (!editProductInfo) {
+    return res.status(404).json({
+      success: false,
+      message: 'Product not found',
+    });
+  }
+  res.status(200).json({ success: true, editProductInfo });
+});
+
+export const editProductPost = asyncHandler(async (req, res) => {
+  const proId = req.params.Id;
+  if (!proId) {
+    return res.status(404).json({
+      success: false,
+      message: 'Product not found',
+    });
+  }
+  const { category, size, material, quantity, narration } = req.body;
+
+  const updatedProduct = await Product.findByIdAndUpdate(
+    proId,
+    {
+      $set: {
+        category,
+        size,
+        material,
+        quantity,
+        narration,
+      },
+    },
+    { new: true }
+  );
+
+  if (!updatedProduct) {
+    return res.status(404).json({
+      success: false,
+      message: 'Product not found or update failed',
+    });
+  }
+
+  const redirectUrl = '/admin/all-product';
+  res.status(201).json({
+    products: updatedProduct,
+    redirectUrl,
+    success: true,
+    message: 'Product successfully updated',
+  });
+});
+
+export const deleteProduct = asyncHandler(async (req, res) => {
+  const productId = req.params.Id;
+  const product = await Product.findById(productId);
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: 'Product not found',
+    });
+  }
+  await Product.findByIdAndDelete(productId);
+  const redirectUrl = '/admin/all-product';
+  res.status(201).json({
+    redirectUrl,
+    success: true,
+    message: 'Product deleted successfully',
+  });
+});
 
 export const allWastages = (req, res) => {
-  res.render('admin/all-wastage');
-};
-
-export const allAdmin = (req, res) => {
-  res.render('admin/all-admin');
-};
-
-export const addAdmin = (req, res) => {
-  res.render('admin/add-admin');
+  const user = req.currentUser;
+  res.render('admin/all-wastage', { user });
 };
 
 export const requestProduct = (req, res) => {
-  res.render('admin/request-product');
+  const user = req.currentUser;
+  res.render('admin/request-product', { user });
 };
 
 export const adminProfile = (req, res) => {
-  res.render('admin/profile');
+  const user = req.currentUser;
+  res.render('admin/profile', { user });
 };

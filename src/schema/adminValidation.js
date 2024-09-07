@@ -39,16 +39,27 @@ export const addUserSchema = Joi.object({
     'any.only': 'Passwords must match',
     'any.required': 'Confirm Password is required',
   }),
+
+  role: Joi.string().trim().required().messages({
+    'string.empty': 'role is required',
+  }),
 });
 
 export const productSchema = Joi.object({
-  email: Joi.string().trim().email().required().messages({
-    'string.empty': 'Email is required',
-    'string.email': 'Email must be valid',
+  category: Joi.string().trim().required().messages({
+    'string.empty': 'Category is required',
   }),
-  password: Joi.string().trim().min(6).required().messages({
-    'string.empty': 'Password is required',
-    'string.min': 'Password must be at least {#limit} characters',
-    'any.required': 'Password is required',
+  size: Joi.string().trim().required().messages({
+    'string.empty': 'Size is required',
+  }),
+  material: Joi.string().trim().required().messages({
+    'string.empty': 'Material is required',
+  }),
+  quantity: Joi.number().required().messages({
+    'number.base': 'Quantity must be a number',
+    'any.required': 'Quantity is required',
+  }),
+  narration: Joi.string().trim().required().messages({
+    'string.empty': 'narration is required',
   }),
 });

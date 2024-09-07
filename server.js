@@ -12,12 +12,12 @@ import {
 
 const app = express();
 
-// Set no-cache headers middleware
-app.use((req, res, next) => {
-  res.header('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-  res.header('Pragma', 'no-cache');
-  next();
-});
+// // Set no-cache headers middleware
+// app.use((req, res, next) => {
+//   res.header('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+//   res.header('Pragma', 'no-cache');
+//   next();
+// });
 
 const trustedOrigins = [config.baseUrl];
 app.use(

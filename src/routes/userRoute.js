@@ -1,7 +1,9 @@
 import { Router } from 'express';
-import { authMiddleware, checkRole } from '../middlewares/index.js';
+import { userImage } from '../configs/index.js';
+import { verifyUserToken, getUserById } from '../middlewares/index.js';
 import {
   userIndex,
+  uploadUserImage,
   request,
   allRequest,
   wastage,
@@ -11,11 +13,18 @@ import {
 
 const userRoute = Router();
 
-userRoute.get('/index', userIndex);
-userRoute.get('/request', request);
-userRoute.get('/allRequest', allRequest);
-userRoute.get('/wastage', wastage);
-userRoute.get('/allWastage', allWastage);
-userRoute.get('/profile', profile);
+userRoute.get('/index', verifyUserToken, getUserById, userIndex);
+userRoute.post(
+  '/uploadUserImage',
+  verifyUserToken,
+  getUserById,
+  userImage.single('image'),
+  uploadUserImage
+);
+userRoute.get('/request', verifyUserToken, getUserById, request);
+userRoute.get('/allRequest', verifyUserToken, getUserById, allRequest);
+userRoute.get('/wastage', verifyUserToken, getUserById, wastage);
+userRoute.get('/allWastage', verifyUserToken, getUserById, allWastage);
+userRoute.get('/profile', verifyUserToken, getUserById, profile);
 
 export { userRoute };

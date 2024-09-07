@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
 import { config } from '../configs/index.js';
 import { Conflict, HttpError } from '../middlewares/index.js';
 import { User } from '../models/index.js';
-import { sendMail } from '../utils/index.js';
+import { sendMail, generateOTP } from '../utils/index.js';
 import { asyncHandler } from '../helper/index.js';
 import {
   signUpSchema,
@@ -13,6 +14,7 @@ import {
 import {
   sanitizeInput,
   sanitizeObject,
+  verifyEmailOtp,
   welcomeEmail,
   forgetPasswordEmail,
   resetPasswordEmail,
@@ -45,23 +47,81 @@ export const signUpPost = asyncHandler(async (req, res) => {
     }
   }
 
+  const { otp, hashedOTP } = await generateOTP();
   const newUser = new User({
     email,
     name,
     password,
+    verificationCode: hashedOTP,
   });
 
   await newUser.save();
 
-  // Use the email template
-  const emailContent = welcomeEmail(newUser);
+  const otpExpiryHours = 24;
+  const emailContent = verifyEmailOtp(newUser, otp, otpExpiryHours);
   await sendMail(emailContent);
 
-  const redirectUrl = `/auth/login`;
-  req.session.message = 'Registration successful';
-  res
-    .status(200)
-    .json({ redirectUrl, success: true, message: 'Registeration successful' });
+  req.session.tempEmail = email;
+
+  const redirectUrl = `/auth/verify-email`;
+  req.session.msg = 'Registration successful. Please verify your email';
+  res.status(200).json({
+    redirectUrl,
+    success: true,
+    message: 'Registration successful. Please verify your email',
+  });
+});
+
+export const verifyEmail = (req, res) => {
+  const msg = req.session.msg;
+  req.session.msg = null;
+  res.render('auth/verify-email', { msg });
+};
+
+export const verifyEmailPost = asyncHandler(async (req, res) => {
+  const { inputOTP } = req.body;
+
+  const email = req.session.tempEmail;
+  if (!email) {
+    return res
+      .status(400)
+      .json({ success: false, message: 'Session expired or email not found' });
+  }
+
+  const user = await User.findOne({ email });
+  if (!user || !user.verificationCode) {
+    return res
+      .status(404)
+      .json({ success: false, message: 'No OTP found or user not found' });
+  }
+
+  const isMatch = await bcrypt.compare(inputOTP, user.verificationCode);
+  if (!isMatch) {
+    return res.status(400).json({ success: false, message: 'Invalid OTP' });
+  }
+
+  const otpCreationDate = user.createdAt;
+  const otpExpiry = new Date(otpCreationDate.getTime() + 24 * 60 * 60 * 1000);
+
+  if (new Date() > otpExpiry) {
+    return res.status(400).json({ success: false, message: 'OTP expired' });
+  }
+
+  user.isVerified = true;
+  user.verificationCode = null;
+  await user.save();
+
+  req.session.tempEmail = null;
+
+  const emailContent = welcomeEmail(user);
+  await sendMail(emailContent);
+
+  req.session.message = 'Email verification successful!';
+  res.status(200).json({
+    success: true,
+    message: 'Email verification successful!',
+    redirectUrl: '/auth/login',
+  });
 });
 
 export const forgetPassword = (req, res) => {
@@ -241,24 +301,17 @@ export const loginPost = asyncHandler(async (req, res) => {
   if (!user.isVerified) {
     return res.status(412).json({
       success: false,
-      message: 'Kindly contact admin to verify your account before login.',
+      message: 'Kindly verify your email before login.',
     });
   }
 
-  const access_token = jwt.sign(
-    { user_id: user.id, role: user.role },
-    config.accessToken,
-    {
-      expiresIn: config.accessTokenExpireTime,
-    }
+  // Successful PIN verification
+  const accessToken = jwt.sign(
+    { id: user._id, role: user.role },
+    config.jwtSecret,
+    { expiresIn: config.accessTokenExpireTime }
   );
-
-  res.cookie('token', access_token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'Strict',
-    // maxAge: config.accessTokenExpireTime,
-  });
+  req.session.accessToken = accessToken;
 
   let redirectUrl = user.role === 'Admin' ? '/admin/index' : '/user/index';
 
@@ -269,7 +322,7 @@ export const loginPost = asyncHandler(async (req, res) => {
     success: true,
     redirectUrl,
     user: { id: user.id, email: user.email, role: user.role },
-    access_token,
+    accessToken,
     message: 'Login successful',
   });
 });

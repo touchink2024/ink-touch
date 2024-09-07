@@ -15,7 +15,11 @@ appMiddleware.use(
     secret: config.sessionSecret,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false },
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 60 * 24, // Cookie expires in 1 day
+    },
   })
 );
 

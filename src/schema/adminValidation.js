@@ -55,7 +55,7 @@ export const productSchema = Joi.object({
   material: Joi.string().trim().required().messages({
     'string.empty': 'Material is required',
   }),
-  quantity: Joi.number().required().messages({
+  totalQuantity: Joi.number().required().messages({
     'number.base': 'Quantity must be a number',
     'any.required': 'Quantity is required',
   }),

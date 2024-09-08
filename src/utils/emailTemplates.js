@@ -81,3 +81,68 @@ export const accountStatusMail = (user) => ({
       
     <p>Best regards,<br>Ink Touch CEO,</p>`,
 });
+
+export const requestProductMail = (user, requestProduct) => ({
+  from: config.nodemailerEmail,
+  to: user.email,
+  subject: 'Product Request Confirmation',
+  html: `
+     <p>Hello ${user.name},</p>
+     <p>Your product request with reference number ${requestProduct.ref} has been submitted.</p>
+     <p><strong>Request Details:</strong></p>
+     <ul>
+       <li>Category: ${requestProduct.category}</li>
+       <li>Size: ${requestProduct.size}</li>
+       <li>Material: ${requestProduct.material}</li>
+       <li>Quantity Requested: ${requestProduct.quantity_requested}</li>
+       <li>Narration: ${requestProduct.narration}</li>
+     </ul>
+       
+    <p>Best regards,<br>Ink Touch CEO,</p>`,
+});
+
+export const wasteProductMail = (user, newWastage) => ({
+  from: config.nodemailerEmail,
+  to: user.email,
+  subject: 'Wastage Submission Confirmation',
+  html: `
+     <p>Hello ${user.name},</p>
+     <p>Your waste submission with reference number ${newWastage.ref} has been submitted.</p>
+     <p><strong>Waste Details:</strong></p>
+     <ul>
+       <li>Category: ${newWastage.category}</li>
+       <li>Size: ${newWastage.size}</li>
+       <li>Material: ${newWastage.material}</li>
+       <li>Quantity Requested: ${newWastage.waste_quantity}</li>
+       <li>Narration: ${newWastage.narration}</li>
+     </ul>
+       
+    <p>Best regards,<br>Ink Touch CEO,</p>`,
+});
+
+export const updateProfile = (user) => ({
+  from: config.nodemailerEmail,
+  to: updatedUser.email,
+  subject: 'Your Information Has Been Modified!',
+  html: `
+      
+    <p>Dear  ${updatedUser.name},</p>
+    <p>This message is to inform you that there has been an update to your information in our database.</p>
+
+    <p>Your new information:</p>
+    <ul>
+        <li>Full Name: ${updatedUser.name}</li>
+        <li>Email Address: ${updatedUser.email}</li>
+        <li>Phone Number: ${updatedUser.phone_number}</li>
+        <li>Password: ${updatedUser.password}</li>
+        <li>Home Address: ${updatedUser.address}</li>
+        <li>City: ${updatedUser.city}</li>
+         <li>State: ${updatedUser.state}</li>
+    </ul>
+      
+    <p>Please review the changes to ensure that they accurately reflect your information. If you believe any information is incorrect or if you have any questions regarding the update, please don't hesitate to reach out to our administrative team at <a href="tel:${config.companyNumber}">${config.companyNumber}</a> or <a href="mailto:${config.companyEmail}">${config.companyEmail}</a>. Your satisfaction is important to us, and we are here to assist you.</p>
+
+    <p>It's important to us your records are kept up-to-date for your convenience and our records.</p>
+      
+    <p>Best regards,<br>Ink Touch CEO,</p>`,
+});

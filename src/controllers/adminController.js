@@ -1,5 +1,4 @@
 'use strict';
-import jwt from 'jsonwebtoken';
 import { config, cloudinary } from '../configs/index.js';
 import { Conflict, HttpError } from '../middlewares/index.js';
 import { User, Product } from '../models/index.js';
@@ -15,7 +14,19 @@ import {
 
 export const adminIndex = (req, res) => {
   const user = req.currentUser;
-  res.render('admin/index', { user });
+  if (!res.paginatedResults) {
+    return res.status(404).json({
+      success: false,
+      message: 'Paginated results not found',
+    });
+  }
+  const { results, currentPage, totalPages } = res.paginatedResults;
+  res.render('admin/index', {
+    user,
+    allProducts: results,
+    currentPage,
+    totalPages,
+  });
 };
 
 export const uploadAdminImage = asyncHandler(async (req, res) => {
@@ -253,7 +264,7 @@ export const addProductPost = asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, errors });
   }
 
-  const { category, size, material, quantity, narration } = value;
+  const { category, size, material, totalQuantity, narration } = value;
 
   const existingProduct = await Product.findOne({
     category: category,
@@ -269,7 +280,7 @@ export const addProductPost = asyncHandler(async (req, res) => {
     category,
     size,
     material,
-    quantity,
+    totalQuantity,
     narration,
   });
 
@@ -319,7 +330,7 @@ export const editProductPost = asyncHandler(async (req, res) => {
       message: 'Product not found',
     });
   }
-  const { category, size, material, quantity, narration } = req.body;
+  const { category, size, material, totalQuantity, narration } = req.body;
 
   const updatedProduct = await Product.findByIdAndUpdate(
     proId,
@@ -328,7 +339,7 @@ export const editProductPost = asyncHandler(async (req, res) => {
         category,
         size,
         material,
-        quantity,
+        totalQuantity,
         narration,
       },
     },

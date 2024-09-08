@@ -27,7 +27,13 @@ import {
 
 const adminRoute = Router();
 
-adminRoute.get('/index', verifyUserToken, getAdminById, adminIndex);
+adminRoute.get(
+  '/index',
+  paginatedResults(Product),
+  verifyUserToken,
+  getAdminById,
+  adminIndex
+);
 
 adminRoute.post(
   '/uploadAdminImage',

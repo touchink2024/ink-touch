@@ -59,21 +59,38 @@
         <!-- Recent Sales Start -->
         <div class="container-fluid pt-4 px-4">
           <div class="bg-light text-center rounded p-4">
+            <div
+              id="generalError"
+              class="alert alert-danger"
+              style="display: none"
+            ></div>
             <div class="container">
               <header>Request Product</header>
 
-              <form action="submit">
+              <form id="requestProductForm" data-url="/user/request">
                 <div class="form first">
                   <div class="details personal">
                     <div class="fields">
                       <div class="input-field">
                         <label>Ref No</label>
-                        <input type="text" readonly />
+                        <input
+                          type="text"
+                          name="ref"
+                          value="<%= ref %>"
+                          readonly
+                        />
+                        <div id="refError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
                         <label>Operator</label>
-                        <input type="text" readonly />
+                        <input
+                          type="text"
+                          name="operator"
+                          value="<%= user.name %>"
+                          readonly
+                        />
+                        <div id="operatorError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
@@ -85,6 +102,7 @@
                           <option value="Flex">Flex</option>
                           <option value="Sav">Sav</option>
                         </select>
+                        <div id="categoryError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
@@ -94,40 +112,52 @@
                             Select a size
                           </option>
                         </select>
+                        <div id="sizeError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
-                        <label>Materials</label>
-                        <input type="test" placeholder="Enter mobile number" />
+                        <label>Material</label>
+                        <input
+                          type="text"
+                          name="material"
+                          placeholder="Enter material"
+                        />
+                        <div id="materialError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
-                        <label>Quantity</label>
-                        <input type="number" placeholder="Enter your gender" />
+                        <label>Request Quantity</label>
+                        <input
+                          type="number"
+                          name="quantity_requested"
+                          placeholder="Enter Quantity"
+                        />
+                        <div
+                          id="quantity_requestedError"
+                          class="text-danger"
+                        ></div>
                       </div>
 
                       <div class="input-field">
                         <label>Narration</label>
-                        <input type="text" placeholder="Enter your ccupation" />
+                        <input
+                          type="text"
+                          name="narration"
+                          placeholder="Enter narration"
+                        />
+                        <div id="narrationError" class="text-danger"></div>
                       </div>
 
                       <div
                         class="input-field"
                         style="margin-top: 20px !important"
                       >
-                        <button class="btnText" type="submit">
+                        <button id="subtns" class="btnText" type="submit">
                           <span class="btnText">Submit</span>
                         </button>
                       </div>
                     </div>
                   </div>
-
-                  <!-- <div class="details ID">
-                    <button class="nextBtn">
-                      <span class="btnText">Next</span>
-                      <i class="uil uil-navigator"></i>
-                    </button>
-                  </div> -->
                 </div>
               </form>
             </div>
@@ -146,55 +176,7 @@
         ><i class="bi bi-arrow-up"></i
       ></a>
     </div>
-    <script>
-      document
-        .getElementById('category')
-        .addEventListener('change', function () {
-          const sizeSelect = document.getElementById('size');
-          const selectedCategory = this.value;
-
-          // Clear the existing options
-          sizeSelect.innerHTML =
-            '<option value="" disabled selected>Select a size</option>';
-
-          let sizes = [];
-
-          if (selectedCategory === 'Flex') {
-            sizes = [
-              '3 ft',
-              '4 ft',
-              '5 ft',
-              '6 ft',
-              '7 ft',
-              '8 ft',
-              '10 ft',
-              'Blacklit 10 ft',
-              'Mesh 10 ft',
-              'Relf flex 10 ft',
-            ];
-          } else if (selectedCategory === 'Sav') {
-            sizes = [
-              '4 ft',
-              '5 ft',
-              '4/5 ft',
-              'Relf sav 4/5 ft',
-              'pvc',
-              'Clear sticker 4&5 ft',
-              'Paper 3 ft',
-              'Paper 4 ft',
-              'Paper 5 ft',
-              'Fabric 4 ft',
-              'Fabric 5 ft',
-            ];
-          }
-
-          sizes.forEach(function (size) {
-            const option = document.createElement('option');
-            option.value = size.toLowerCase();
-            option.textContent = size;
-            sizeSelect.appendChild(option);
-          });
-        });
-    </script>
+    <script src="../../js/add-product.js"></script>
+    <script src="../../mail/request-product.js"></script>
   </body>
 </html>

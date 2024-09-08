@@ -1,5 +1,6 @@
 import otpGenerator from 'otp-generator';
 import bcrypt from 'bcryptjs';
+import { RequestProduct } from '../models/index.js';
 
 const hashFunction = async (data) => {
   const saltRounds = 10; // Salt rounds for bcrypt
@@ -15,4 +16,27 @@ export const generateOTP = async () => {
 
   const hashedOTP = await hashFunction(otp);
   return { otp, hashedOTP };
+};
+
+export const generateUniqueRef = async () => {
+  let isUnique = false;
+  let ref;
+
+  while (!isUnique) {
+    const randomNumber = otpGenerator.generate(4, {
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
+      digits: true,
+    });
+
+    ref = `INV-${randomNumber}`;
+
+    const existingRequest = await RequestProduct.findOne({ ref });
+    if (!existingRequest) {
+      isUnique = true;
+    }
+  }
+
+  return ref;
 };

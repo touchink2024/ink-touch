@@ -1,45 +1,77 @@
 import Joi from 'joi';
 
-// export const loginSchema = Joi.object({
-//   email: Joi.string().trim().email().required().messages({
-//     'string.empty': 'Email is required',
-//     'string.email': 'Email must be valid',
-//   }),
-//   password: Joi.string().trim().min(6).required().messages({
-//     'string.empty': 'Password is required',
-//     'string.min': 'Password must be at least {#limit} characters',
-//     'any.required': 'Password is required',
-//   }),
-// });
+export const requestSchema = Joi.object({
+  ref: Joi.string().trim().required().messages({
+    'string.empty': 'Ref is required',
+  }),
+  operator: Joi.string().trim().required().messages({
+    'string.empty': 'Operator is required',
+  }),
+  category: Joi.string().trim().required().messages({
+    'string.empty': 'Category is required',
+  }),
+  size: Joi.string().trim().required().messages({
+    'string.empty': 'Size is required',
+  }),
+  material: Joi.string().trim().required().messages({
+    'string.empty': 'Material is required',
+  }),
+  quantity_requested: Joi.number().required().messages({
+    'number.base': 'Quantity must be a number',
+    'any.required': 'Quantity is required',
+  }),
+  narration: Joi.string().trim().required().messages({
+    'string.empty': 'narration is required',
+  }),
+});
 
-// export const resetPasswordSchema = Joi.object({
-//   password: Joi.string().min(6).required().messages({
-//     'string.empty': 'Password is required',
-//     'string.min': 'Password must be at least {#limit} characters',
-//     'any.required': 'Password is required',
-//   }),
-// });
+export const wasteSchema = Joi.object({
+  ref: Joi.string().trim().required().messages({
+    'string.empty': 'Ref is required',
+  }),
+  operator: Joi.string().trim().required().messages({
+    'string.empty': 'Operator is required',
+  }),
+  category: Joi.string().trim().required().messages({
+    'string.empty': 'Category is required',
+  }),
+  size: Joi.string().trim().required().messages({
+    'string.empty': 'Size is required',
+  }),
+  material: Joi.string().trim().required().messages({
+    'string.empty': 'Material is required',
+  }),
+  waste_quantity: Joi.number().required().messages({
+    'number.base': 'Quantity must be a number',
+    'any.required': 'Quantity is required',
+  }),
+  narration: Joi.string().trim().required().messages({
+    'string.empty': 'narration is required',
+  }),
+});
 
-// export const userUpdateSchema = z.object({
-//   name: z
-//     .string()
-//     .trim()
-//     .max(100, "Name can't exceed 100 characters")
-//     .optional(),
-//   email: z
-//     .string()
-//     .trim()
-//     .toLowerCase()
-//     .email('Invalid email address')
-//     .optional(),
-//   password: z
-//     .string()
-//     .trim()
-//     .min(8, 'Password must be at least 8 characters long')
-//     .max(100, "Password can't exceed 100 characters")
-//     .optional(),
-// });
-
-// role: Joi.string().trim().valid('User', 'Admin').required().messages({
-//   'string.empty': 'Role is required',
-// }),
+export const updateProfileSchema = Joi.object({
+  name: Joi.string().trim().required().messages({
+    'string.empty': 'Name is required',
+  }),
+  email: Joi.string().trim().required().messages({
+    'string.empty': 'Email is required',
+  }),
+  phone_number: Joi.string().trim().required().messages({
+    'string.empty': 'Number is required',
+  }),
+  password: Joi.string().trim().min(6).required().messages({
+    'string.empty': 'Password is required',
+    'string.min': 'Password must be at least {#limit} characters',
+    'any.required': 'Password is required',
+  }),
+  address: Joi.string().trim().required().messages({
+    'string.empty': 'Address is required',
+  }),
+  city: Joi.string().trim().required().messages({
+    'string.empty': 'City is required',
+  }),
+  state: Joi.string().trim().required().messages({
+    'string.empty': 'State is required',
+  }),
+});

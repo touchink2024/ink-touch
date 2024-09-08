@@ -14,10 +14,13 @@ import {
   userIndex,
   uploadUserImage,
   request,
+  requestPost,
   allRequest,
   wastage,
   allWastage,
+  wastagePost,
   profile,
+  profilePost,
 } from './userController.js';
 
 import {
@@ -58,10 +61,13 @@ export {
   userIndex,
   uploadUserImage,
   request,
+  requestPost,
   allRequest,
   wastage,
   allWastage,
+  wastagePost,
   profile,
+  profilePost,
   //admin
   adminIndex,
   uploadAdminImage,

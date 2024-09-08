@@ -3,7 +3,11 @@ import {
   resetPasswordSchema,
   loginSchema,
 } from './authValidation.js';
-// import { loginSchema } from './userValidation.js';
+import {
+  requestSchema,
+  wasteSchema,
+  updateProfileSchema,
+} from './userValidation.js';
 import { productSchema, addUserSchema } from './adminValidation.js';
 
 export {
@@ -15,4 +19,7 @@ export {
   productSchema,
   addUserSchema,
   //user
+  requestSchema,
+  wasteSchema,
+  updateProfileSchema,
 };

@@ -42,8 +42,8 @@ function showEditProductModal(button) {
             <tr><th>Material</th><td><input style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" type="text" id="material" name="material" value="${
               product.material || ''
             }"></td></tr>
-            <tr><th>Quantity</th><td><input style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" type="number" id="quantity" name="quantity" value="${
-              product.quantity || ''
+            <tr><th>Quantity</th><td><input style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" type="number" id="totalQuantity" name="totalQuantity" value="${
+              product.totalQuantity || ''
             }"></td></tr>
             <tr><th>Narration</th><td><input style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" type="text" id="narration" name="narration" value="${
               product.narration || ''

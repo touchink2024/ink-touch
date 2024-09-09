@@ -2,8 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import http from 'http';
-import { config, startServer } from './configs/index.js';
 import { router } from './routes/index.js';
+import {
+  config,
+  startServer,
+  corsOptions,
+  keepAlive,
+} from './configs/index.js';
+
 import {
   appMiddleware,
   errorHandler,
@@ -11,6 +17,8 @@ import {
 } from './middlewares/index.js';
 
 const app = express();
+
+app.use(cors(corsOptions));
 
 // Set no-cache headers middleware
 app.use((req, res, next) => {
@@ -20,17 +28,6 @@ app.use((req, res, next) => {
   res.set('Surrogate-Control', 'no-store');
   next();
 });
-
-const trustedOrigins = [config.baseUrl];
-app.use(
-  cors({
-    origin: trustedOrigins,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
-  })
-);
 
 app.use(morgan('tiny'));
 app.disable('x-powered-by');
@@ -46,3 +43,5 @@ const server = http.createServer(app);
 
 // Start the server
 startServer(server);
+
+keepAlive();

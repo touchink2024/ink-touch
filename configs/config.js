@@ -34,6 +34,8 @@ const config = {
 
   companyEmail: process.env.COMPANY_EMAIL,
   companyNumber: process.env.COMPANY_NUMBER,
+
+  cors: process.env.CORS_WHITELIST,
 };
 
 export { config };

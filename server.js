@@ -2,13 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import http from 'http';
-import { config, startServer } from './src/configs/index.js';
-import { router } from './src/routes/index.js';
+import { config, startServer } from './configs/index.js';
+import { router } from './routes/index.js';
 import {
   appMiddleware,
   errorHandler,
   routeNotFound,
-} from './src/middlewares/index.js';
+} from './middlewares/index.js';
 
 const app = express();
 

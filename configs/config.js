@@ -22,9 +22,7 @@ const config = {
   jwtSecret: process.env.JWT_SECRET,
 
   accessToken: process.env.ACCESS_TOKEN,
-  refreshToken: process.env.REFRESH_TOKEN,
   accessTokenExpireTime: process.env.ACCESS_TOKEN_EXPIRATION_TIME,
-  refreshTokenExpireTime: process.env.REFRESH_TOKEN_EXPIRATION_TIME,
 
   mailerService: process.env.MAILER_SERVICE,
   nodemailerEmail: process.env.NODEMAILER_EMAIL,

@@ -1,23 +1,23 @@
 'use strict';
-import { config, cloudinary } from '../configs/index.js';
-import { Conflict, HttpError } from '../middlewares/index.js';
+import { cloudinary } from '../configs/index.js';
 import { User, RequestProduct, Product, Wastage } from '../models/index.js';
 import { asyncHandler } from '../helper/index.js';
+import bcrypt from 'bcryptjs';
 import {
   requestSchema,
   wasteSchema,
   updateProfileSchema,
 } from '../schema/index.js';
 import {
-  sanitizeInput,
   sanitizeObject,
   sendMail,
   generateUniqueRef,
   requestProductMail,
   wasteProductMail,
+  updateProfile,
 } from '../utils/index.js';
 
-export const userIndex = (req, res) => {
+export const userIndex = asyncHandler(async (req, res) => {
   const user = req.currentUser;
   if (!res.paginatedResults) {
     return res.status(404).json({
@@ -25,15 +25,35 @@ export const userIndex = (req, res) => {
       message: 'Paginated results not found',
     });
   }
+
   const { results, currentPage, totalPages } = res.paginatedResults;
+
+  const requestProducts = await RequestProduct.countDocuments({
+    userId: user._id,
+  });
+  const wastage = await Wastage.countDocuments({
+    userId: user._id,
+  });
+  const totalRequestProducts = await RequestProduct.countDocuments({
+    userId: user._id,
+    request_status: 'Accept',
+  });
+  const totalWastage = await Wastage.countDocuments({
+    userId: user._id,
+    waste_status: 'Approved',
+  });
 
   res.render('user/index', {
     user,
     allRequest: results,
     currentPage,
     totalPages,
+    totalRequestProducts,
+    totalWastage,
+    requestProducts,
+    wastage,
   });
-};
+});
 
 export const uploadUserImage = asyncHandler(async (req, res) => {
   const user = req.currentUser;
@@ -221,8 +241,16 @@ export const profile = (req, res) => {
 export const profilePost = asyncHandler(async (req, res) => {
   const user = req.currentUser;
   const sanitizedBody = sanitizeObject(req.body);
-  const { name, email, phone_number, password, address, city, state } =
-    sanitizedBody;
+  const {
+    name,
+    email,
+    phone_number,
+    current_password,
+    new_password,
+    address,
+    city,
+    state,
+  } = sanitizedBody;
 
   const { error, value } = updateProfileSchema.validate(sanitizedBody, {
     abortEarly: false,
@@ -235,7 +263,7 @@ export const profilePost = asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, errors });
   }
 
-  const existingUser = await User.findById(user._id);
+  const existingUser = await User.findById(user._id).select('+password');
   if (!existingUser) {
     return res.status(404).json({ success: false, message: 'User not found.' });
   }
@@ -249,24 +277,28 @@ export const profilePost = asyncHandler(async (req, res) => {
     state,
   };
 
-  if (password) {
-    // If the password is provided and is different from the current one, hash it
-    const isPasswordSame = await bcrypt.compare(
-      password,
+  if (current_password && new_password) {
+    const isPasswordMatch = await bcrypt.compare(
+      current_password,
       existingUser.password
     );
-    if (!isPasswordSame) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      updatedFields.password = hashedPassword;
+
+    if (!isPasswordMatch) {
+      return res.status(400).json({
+        success: false,
+        message: 'Current password is incorrect.',
+      });
     }
+
+    const hashedPassword = await bcrypt.hash(new_password, 10);
+    updatedFields.password = hashedPassword;
   }
 
   const updatedUser = await User.findByIdAndUpdate(user._id, updatedFields, {
     new: true,
-    runValidators: true,
   });
 
-  const emailContent = updateProfile(updatedUser);
+  const emailContent = updateProfile(user, updatedUser);
   await sendMail(emailContent);
 
   const redirectUrl = '/user/profile';
@@ -275,4 +307,17 @@ export const profilePost = asyncHandler(async (req, res) => {
     success: true,
     message: 'Profile updated successfully.',
   });
+});
+
+export const userLogout = asyncHandler(async (req, res) => {
+  const accessToken = req.cookies.accessToken;
+  const logoutRedirectUrl = '/auth/login';
+
+  res.setHeader('Clear-Site-Data', '"cookies"');
+  res.clearCookie('accessToken');
+
+  res
+    .status(200)
+    .json({ logoutRedirectUrl, success: true, message: 'You are logged out!' });
+  res.end();
 });

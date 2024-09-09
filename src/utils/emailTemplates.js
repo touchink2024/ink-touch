@@ -120,13 +120,13 @@ export const wasteProductMail = (user, newWastage) => ({
     <p>Best regards,<br>Ink Touch CEO,</p>`,
 });
 
-export const updateProfile = (user) => ({
+export const updateProfile = (user, updatedUser) => ({
   from: config.nodemailerEmail,
-  to: updatedUser.email,
+  to: user.email,
   subject: 'Your Information Has Been Modified!',
   html: `
       
-    <p>Dear  ${updatedUser.name},</p>
+    <p>Dear  ${user.name},</p>
     <p>This message is to inform you that there has been an update to your information in our database.</p>
 
     <p>Your new information:</p>
@@ -134,7 +134,6 @@ export const updateProfile = (user) => ({
         <li>Full Name: ${updatedUser.name}</li>
         <li>Email Address: ${updatedUser.email}</li>
         <li>Phone Number: ${updatedUser.phone_number}</li>
-        <li>Password: ${updatedUser.password}</li>
         <li>Home Address: ${updatedUser.address}</li>
         <li>City: ${updatedUser.city}</li>
          <li>State: ${updatedUser.state}</li>
@@ -144,5 +143,45 @@ export const updateProfile = (user) => ({
 
     <p>It's important to us your records are kept up-to-date for your convenience and our records.</p>
       
+    <p>Best regards,<br>Ink Touch CEO,</p>`,
+});
+
+export const requestUpdateMail = (user, request, request_status) => ({
+  from: config.nodemailerEmail,
+  to: user.email,
+  subject: `Request ${request_status}`,
+  html: `
+      
+    <p>Dear ${user.name}</p>
+    <p>Your request (Ref Number: ${
+      request.ref
+    }) has been ${request_status.toLowerCase()}.\n\nThank you..</p>
+      
+    <p>If you believe any information is incorrect or if you have any questions regarding the update, please don't hesitate to reach out to our administrative team at <a href="tel:${
+      config.companyNumber
+    }">${config.companyNumber}</a> or <a href="mailto:${config.companyEmail}">${
+    config.companyEmail
+  }</a>. Your satisfaction is important to us.</p>
+
+    <p>Best regards,<br>Ink Touch CEO,</p>`,
+});
+
+export const wasteUpdateMail = (user, waste, waste_status) => ({
+  from: config.nodemailerEmail,
+  to: user.email,
+  subject: `Wastage ${waste_status}`,
+  html: `
+      
+    <p>Dear ${user.name}</p>
+    <p>Your waste (Ref Number: ${
+      waste.ref
+    }) has been ${waste_status.toLowerCase()}.\n\nThank you..</p>
+      
+    <p>If you believe any information is incorrect or if you have any questions regarding the update, please don't hesitate to reach out to our administrative team at <a href="tel:${
+      config.companyNumber
+    }">${config.companyNumber}</a> or <a href="mailto:${config.companyEmail}">${
+    config.companyEmail
+  }</a>. Your satisfaction is important to us.</p>
+
     <p>Best regards,<br>Ink Touch CEO,</p>`,
 });

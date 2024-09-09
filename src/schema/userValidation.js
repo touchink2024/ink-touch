@@ -60,11 +60,23 @@ export const updateProfileSchema = Joi.object({
   phone_number: Joi.string().trim().required().messages({
     'string.empty': 'Number is required',
   }),
-  password: Joi.string().trim().min(6).required().messages({
-    'string.empty': 'Password is required',
-    'string.min': 'Password must be at least {#limit} characters',
-    'any.required': 'Password is required',
+  current_password: Joi.string()
+    .trim()
+    .min(6)
+    .allow(null, '')
+    .optional()
+    .messages({
+      'string.empty': 'Current password is required',
+      'string.min': 'Current password must be at least {#limit} characters',
+      'any.required': 'Current password is required',
+    }),
+
+  new_password: Joi.string().trim().min(6).allow(null, '').optional().messages({
+    'string.empty': 'New password is required',
+    'string.min': 'New password must be at least {#limit} characters',
+    'any.required': 'New password is required',
   }),
+
   address: Joi.string().trim().required().messages({
     'string.empty': 'Address is required',
   }),

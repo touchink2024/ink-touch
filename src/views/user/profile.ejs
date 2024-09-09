@@ -8,7 +8,7 @@
     <meta content="" name="description" />
 
     <!-- Favicon -->
-    <link href="../../img/favi.png" rel="icon" />
+    <link href="../../img/ink.jpg" rel="icon" />
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -66,9 +66,18 @@
                 <div
                   class="d-flex justify-content-between align-items-center mb-3"
                 >
+                  <div
+                    id="generalError"
+                    class="alert alert-danger"
+                    style="display: none"
+                  ></div>
                   <h4 class="text-right">Profile Settings</h4>
                 </div>
-                <form>
+                <form
+                  id="updateProfileForm"
+                  data-url="/user/profile"
+                  method="post"
+                >
                   <div class="row mt-2">
                     <div class="col-md-6">
                       <label class="labels">Full Name</label
@@ -78,6 +87,7 @@
                         name="name"
                         value="<%= user.name %>"
                       />
+                      <div id="nameError" class="text-danger"></div>
                     </div>
                     <div class="col-md-6">
                       <label class="labels">Email</label
@@ -87,6 +97,7 @@
                         name="email"
                         value="<%= user.email %>"
                       />
+                      <div id="emailError" class="text-danger"></div>
                     </div>
                   </div>
                   <div class="row mt-2">
@@ -98,19 +109,9 @@
                         name="phone_number"
                         value="<%= user.phone_number %>"
                       />
+                      <div id="phone_numberError" class="text-danger"></div>
                     </div>
 
-                    <div class="col-md-6">
-                      <label class="labels">Password</label
-                      ><input
-                        type="password"
-                        class="form-control"
-                        name="password"
-                        value="<%= user.password %>"
-                      />
-                    </div>
-                  </div>
-                  <div class="row mt-2">
                     <div class="col-md-6">
                       <label class="labels">Address</label
                       ><input
@@ -119,7 +120,10 @@
                         value="<%= user.address %>"
                         name="address"
                       />
+                      <div id="addressError" class="text-danger"></div>
                     </div>
+                  </div>
+                  <div class="row mt-2">
                     <div class="col-md-6">
                       <label class="labels">City</label
                       ><input
@@ -128,9 +132,9 @@
                         name="city"
                         value="<%= user.city %>"
                       />
+                      <div id="cityError" class="text-danger"></div>
                     </div>
-                  </div>
-                  <div class="row mt-2">
+
                     <div class="col-md-6">
                       <label class="labels">State</label
                       ><input
@@ -139,23 +143,38 @@
                         value="<%= user.state %>"
                         name="state"
                       />
+                      <div id="stateError" class="text-danger"></div>
                     </div>
+                  </div>
+                  <div class="row mt-2">
                     <div class="col-md-6">
-                      <label class="labels">Role</label
+                      <label class="labels">Current Password</label
                       ><input
-                        type="text"
+                        type="password"
                         class="form-control"
-                        value="<%= user.role %>"
-                        readonly
+                        name="current_password"
+                        placeholder="Enter current password"
                       />
+                      <div id="current_passwordError" class="text-danger"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <label class="labels">New Password</label
+                      ><input
+                        type="password"
+                        class="form-control"
+                        name="new_password"
+                        placeholder="Enter new password"
+                      />
+                      <div id="new_passwordError" class="text-danger"></div>
                     </div>
                   </div>
 
                   <div class="mt-5 text-center">
                     <button
                       id="subProfile"
-                      class="btn btn-primary profile-button"
-                      type="button"
+                      class="btn btn-primary"
+                      type="submit"
                     >
                       Update Profile
                     </button>
@@ -180,6 +199,7 @@
         ><i class="bi bi-arrow-up"></i
       ></a>
     </div>
-    <script></script>
+
+    <script src="../../mail/update-profile.js"></script>
   </body>
 </html>

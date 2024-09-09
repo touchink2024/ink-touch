@@ -237,10 +237,13 @@ export const resetPasswordPost = asyncHandler(async (req, res) => {
 });
 
 export const login = (req, res) => {
+  const errorMessage = req.session.authErrorMessage;
   const message = req.session.message;
   const msge = req.session.msge;
   req.session.message = null;
-  res.render('auth/login', { message, msge });
+  req.session.msge = null;
+  req.session.errorMessage = null;
+  res.render('auth/login', { message, msge, errorMessage });
 };
 
 export const loginPost = asyncHandler(async (req, res) => {

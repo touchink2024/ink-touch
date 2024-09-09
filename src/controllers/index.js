@@ -21,6 +21,7 @@ import {
   wastagePost,
   profile,
   profilePost,
+  userLogout,
 } from './userController.js';
 
 import {
@@ -40,9 +41,13 @@ import {
   editProduct,
   editProductPost,
   deleteProduct,
-  allWastages,
-  adminProfile,
   requestProduct,
+  requestProductPost,
+  allWastages,
+  allWastagesPost,
+  adminProfile,
+  adminProfilePost,
+  adminLogout,
 } from './adminController.js';
 
 export {
@@ -68,6 +73,7 @@ export {
   wastagePost,
   profile,
   profilePost,
+  userLogout,
   //admin
   adminIndex,
   uploadAdminImage,
@@ -85,7 +91,11 @@ export {
   editProduct,
   editProductPost,
   deleteProduct,
-  allWastages,
   requestProduct,
+  requestProductPost,
+  allWastages,
+  allWastagesPost,
   adminProfile,
+  adminProfilePost,
+  adminLogout,
 };

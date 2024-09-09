@@ -45,3 +45,34 @@ document.getElementById('category').addEventListener('change', function () {
     sizeSelect.appendChild(option);
   });
 });
+
+// Handle size change
+document.getElementById('size').addEventListener('change', function () {
+  const selectedCategory = document.getElementById('category').value;
+  const selectedSize = this.value;
+  const selectedMaterial = document.querySelector(
+    'input[name="material"]'
+  ).value;
+
+  if (selectedCategory && selectedSize && selectedMaterial) {
+    fetch(
+      `/product-details?category=${selectedCategory}&size=${selectedSize}&material=${selectedMaterial}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.totalQuantity !== undefined) {
+          document.getElementById(
+            'quantityDisplay'
+          ).textContent = `Remaining Quantity: ${data.totalQuantity}`;
+        } else {
+          document.getElementById('quantityDisplay').textContent =
+            'Product not found';
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching product details:', error);
+        document.getElementById('quantityDisplay').textContent =
+          'Error fetching product details';
+      });
+  }
+});

@@ -3,28 +3,21 @@ import { config } from '../configs/index.js';
 import { log } from '../utils/index.js';
 import { User } from '../models/index.js';
 
-// verifyUserToken middleware
-const verifyUserToken = async (req, res, next) => {
+export const verifyUserToken = async (req, res, next) => {
   try {
-    // Retrieve access token from the session
     const accessToken = req.session.accessToken;
-
     if (!accessToken) {
-      console.log('No access token found');
-      req.session.authErrorMessage = 'Please sign in to access this page';
+      req.session.authErrorMessage = 'Sign in to access this page';
       return res.redirect('/auth/login');
     }
 
-    // Verify the access token
     jwt.verify(accessToken, config.jwtSecret, (err, decodedAccessToken) => {
       if (err) {
-        console.log('Invalid access token');
-        req.session.authErrorMessage = 'Please sign in to access this page';
+        req.session.authErrorMessage = 'Sign in to access this page';
         return res.redirect('/auth/login');
       } else {
-        // Access token is valid
         req.user = decodedAccessToken;
-        next(); // Continue to the next middleware or route handler
+        next();
       }
     });
   } catch (error) {
@@ -34,33 +27,7 @@ const verifyUserToken = async (req, res, next) => {
   }
 };
 
-// Middleware to verify token and redirect based on role
-const verifyToken = (role) => (req, res, next) => {
-  const accessToken = req.session.accessToken;
-
-  if (accessToken) {
-    jwt.verify(accessToken, config.jwtSecret, (err, decodedToken) => {
-      if (err) {
-        next(); // Invalid token, proceed to the next middleware or route
-      } else {
-        // Token is valid, redirect based on role
-        if (decodedToken.role === role) {
-          next(); // User has the correct role, proceed to the next middleware or route
-        } else {
-          return res.status(403).json({ message: 'Access denied' });
-        }
-      }
-    });
-  } else {
-    next(); // No token, proceed to the next middleware or route
-  }
-};
-
-// Middleware for checking if specific user roles are logged in
-const isUserSignedIn = verifyToken('User');
-const isAdminSignedIn = verifyToken('Admin');
-
-const getAdminById = async (req, res, next) => {
+export const getAdminById = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
     if (!user) {
@@ -85,7 +52,7 @@ const getAdminById = async (req, res, next) => {
   }
 };
 
-const getUserById = async (req, res, next) => {
+export const getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
     if (!user) {
@@ -108,11 +75,4 @@ const getUserById = async (req, res, next) => {
     log.error(error);
     next(error);
   }
-};
-export {
-  verifyUserToken,
-  isUserSignedIn,
-  isAdminSignedIn,
-  getAdminById,
-  getUserById,
 };

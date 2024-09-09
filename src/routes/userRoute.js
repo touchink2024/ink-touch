@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { userImage } from '../configs/index.js';
 import { verifyUserToken, getUserById } from '../middlewares/index.js';
-import { paginatedResults } from '../utils/index.js';
-import { User, Wastage, RequestProduct } from '../models/index.js';
+import { paginatedResults, userRequestFilter } from '../utils/index.js';
+import { Wastage, RequestProduct } from '../models/index.js';
 import {
   userIndex,
   uploadUserImage,
@@ -14,15 +14,16 @@ import {
   wastagePost,
   profile,
   profilePost,
+  userLogout,
 } from '../controllers/index.js';
 
 const userRoute = Router();
 
 userRoute.get(
   '/index',
-  paginatedResults(RequestProduct),
   verifyUserToken,
   getUserById,
+  paginatedResults(RequestProduct, userRequestFilter),
   userIndex
 );
 userRoute.post(
@@ -32,27 +33,29 @@ userRoute.post(
   userImage.single('image'),
   uploadUserImage
 );
+
 userRoute.get('/request', verifyUserToken, getUserById, request);
 userRoute.post('/request', verifyUserToken, getUserById, requestPost);
 userRoute.get(
   '/allRequest',
-  paginatedResults(RequestProduct),
   verifyUserToken,
   getUserById,
+  paginatedResults(RequestProduct, userRequestFilter),
   allRequest
 );
 
 userRoute.get('/wastage', verifyUserToken, getUserById, wastage);
 userRoute.get(
   '/allWastage',
-  paginatedResults(Wastage),
   verifyUserToken,
   getUserById,
+  paginatedResults(Wastage, userRequestFilter),
   allWastage
 );
 userRoute.post('/wastage', verifyUserToken, getUserById, wastagePost);
 
 userRoute.get('/profile', verifyUserToken, getUserById, profile);
 userRoute.put('/profile', verifyUserToken, getUserById, profilePost);
+userRoute.delete('/logout', verifyUserToken, getUserById, userLogout);
 
 export { userRoute };

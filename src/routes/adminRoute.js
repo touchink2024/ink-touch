@@ -1,8 +1,12 @@
 import { Router } from 'express';
 import { paginatedResults } from '../utils/index.js';
-import { User, Product } from '../models/index.js';
+import { User, Product, RequestProduct, Wastage } from '../models/index.js';
 import { adminImage } from '../configs/index.js';
-import { verifyUserToken, getAdminById } from '../middlewares/index.js';
+import {
+  verifyUserToken,
+  getAdminById,
+  checkRole,
+} from '../middlewares/index.js';
 import {
   adminIndex,
   uploadAdminImage,
@@ -20,16 +24,20 @@ import {
   editProduct,
   editProductPost,
   deleteProduct,
-  allWastages,
   requestProduct,
+  requestProductPost,
+  allWastages,
+  allWastagesPost,
   adminProfile,
+  adminProfilePost,
+  adminLogout,
 } from '../controllers/index.js';
 
 const adminRoute = Router();
 
 adminRoute.get(
   '/index',
-  paginatedResults(Product),
+  paginatedResults(RequestProduct),
   verifyUserToken,
   getAdminById,
   adminIndex
@@ -64,9 +72,16 @@ adminRoute.put(
   '/editUser/:userId',
   verifyUserToken,
   getAdminById,
+  checkRole(['Super_Admin']),
   editUserPost
 );
-adminRoute.delete('/user/:userId', verifyUserToken, getAdminById, deleteUser);
+adminRoute.delete(
+  '/user/:userId',
+  verifyUserToken,
+  getAdminById,
+  checkRole(['Super_Admin']),
+  deleteUser
+);
 
 adminRoute.get(
   '/all-product',
@@ -86,14 +101,27 @@ adminRoute.put(
 );
 adminRoute.delete('/product/:Id', verifyUserToken, getAdminById, deleteProduct);
 
-adminRoute.get('/all-wastage', verifyUserToken, getAdminById, allWastages);
-
 adminRoute.get(
-  '/request-product',
+  '/request',
+  paginatedResults(RequestProduct),
   verifyUserToken,
   getAdminById,
   requestProduct
 );
+adminRoute.post('/request', verifyUserToken, getAdminById, requestProductPost);
+
+adminRoute.get(
+  '/all-wastage',
+  paginatedResults(Wastage),
+  verifyUserToken,
+  getAdminById,
+  allWastages
+);
+adminRoute.post('/all-wastage', verifyUserToken, getAdminById, allWastagesPost);
+
 adminRoute.get('/profile', verifyUserToken, getAdminById, adminProfile);
+adminRoute.put('/profile', verifyUserToken, getAdminById, adminProfilePost);
+
+adminRoute.delete('/logout', verifyUserToken, getAdminById, adminLogout);
 
 export { adminRoute };

@@ -11,7 +11,7 @@ export const paginatedResults = (model, getFilter = () => ({})) => {
 
       const results = await model
         .find(filter)
-        .sort({ date_added: -1 })
+        .sort({ createdAt: -1 })
         .skip((page - 1) * perPage)
         .limit(perPage)
         .exec();
@@ -27,4 +27,15 @@ export const paginatedResults = (model, getFilter = () => ({})) => {
       next(err);
     }
   };
+};
+
+export const userRequestFilter = (req) => {
+  if (req.currentUser) {
+    return { userId: req.currentUser._id };
+  }
+  return {};
+};
+
+export const allProductsFilter = () => {
+  return {};
 };

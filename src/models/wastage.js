@@ -33,7 +33,7 @@ const wastageSchema = new mongoose.Schema(
     waste_status: {
       type: String,
       trim: true,
-      enum: ['Pending', 'Approved'],
+      enum: ['Pending', 'Approved', 'Rejected'],
       default: 'Pending',
     },
     userId: {

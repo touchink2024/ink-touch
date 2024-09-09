@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { RequestProduct } from '../models/index.js';
 
 const hashFunction = async (data) => {
-  const saltRounds = 10; // Salt rounds for bcrypt
+  const saltRounds = 10; 
   return bcrypt.hash(data, saltRounds);
 };
 

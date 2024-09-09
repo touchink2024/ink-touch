@@ -1,5 +1,6 @@
 import { verifyUserToken, getAdminById, getUserById } from './auth.js';
 import { appMiddleware } from './expressMiddlewares.js';
+import { checkRole } from './checkRole.js';
 import {
   BadRequest,
   Conflict,
@@ -18,6 +19,7 @@ export {
   getAdminById,
   getUserById,
   appMiddleware,
+  checkRole,
   BadRequest,
   Conflict,
   Forbidden,

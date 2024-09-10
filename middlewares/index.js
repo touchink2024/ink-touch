@@ -2,6 +2,11 @@ import { verifyUserToken, getAdminById, getUserById } from './auth.js';
 import { appMiddleware } from './expressMiddlewares.js';
 import { checkRole } from './checkRole.js';
 import {
+  addRequestCountToLocals,
+  addReturnCountToLocals,
+  addWasteCountToLocals,
+} from './requestCount.js';
+import {
   BadRequest,
   Conflict,
   Forbidden,
@@ -20,6 +25,9 @@ export {
   getUserById,
   appMiddleware,
   checkRole,
+  addRequestCountToLocals,
+  addReturnCountToLocals,
+  addWasteCountToLocals,
   BadRequest,
   Conflict,
   Forbidden,

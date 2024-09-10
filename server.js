@@ -7,6 +7,9 @@ import { router } from './routes/index.js';
 
 import {
   appMiddleware,
+  addRequestCountToLocals,
+  addReturnCountToLocals,
+  addWasteCountToLocals,
   errorHandler,
   routeNotFound,
 } from './middlewares/index.js';
@@ -35,11 +38,11 @@ app.use(
 
 app.use(morgan('tiny'));
 app.disable('x-powered-by');
+app.use(addRequestCountToLocals, addReturnCountToLocals, addWasteCountToLocals);
 
 app.use(router);
 app.use(appMiddleware);
 
-//Use the ErrorHandler middleware as the last middleware
 app.use(errorHandler, routeNotFound);
 
 // Create an HTTP server instance

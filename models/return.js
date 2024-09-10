@@ -1,35 +1,35 @@
 import mongoose from 'mongoose';
 
-const requestProductSchema = new mongoose.Schema(
+const returnSchema = new mongoose.Schema(
   {
     ref: {
       type: String,
-      required: true,
-      unique: true,
+      trim: true,
     },
     operator: {
       type: String,
-      required: true,
+      trim: true,
     },
     category: {
       type: String,
-      required: true,
+      trim: true,
     },
     size: {
       type: String,
-      required: true,
+      trim: true,
     },
-    quantity_requested: {
+    return_quantity: {
       type: Number,
-      required: true,
+      trim: true,
     },
     narration: {
       type: String,
+      trim: true,
     },
-    request_status: {
+    return_status: {
       type: String,
       trim: true,
-      enum: ['Pending', 'Accept', 'Declined'],
+      enum: ['Pending', 'Approved', 'Rejected'],
       default: 'Pending',
     },
     userId: {
@@ -43,6 +43,6 @@ const requestProductSchema = new mongoose.Schema(
   }
 );
 
-const RequestProduct = mongoose.model('RequestProduct', requestProductSchema);
+const Return = mongoose.model('Return', returnSchema);
 
-export { RequestProduct };
+export { Return };

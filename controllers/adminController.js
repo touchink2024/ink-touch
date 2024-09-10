@@ -1,10 +1,16 @@
 'use strict';
 import { cloudinary } from '../configs/index.js';
 import { Conflict, HttpError } from '../middlewares/index.js';
-import { User, Product, RequestProduct, Wastage } from '../models/index.js';
 import { sendMail } from '../utils/index.js';
 import { asyncHandler } from '../helper/index.js';
 import bcrypt from 'bcryptjs';
+import {
+  User,
+  Product,
+  RequestProduct,
+  Wastage,
+  Return,
+} from '../models/index.js';
 import {
   productSchema,
   addUserSchema,
@@ -13,10 +19,12 @@ import {
 import {
   sanitizeObject,
   welcomeEmail,
+  approveEmail,
   accountStatusMail,
   requestUpdateMail,
   wasteUpdateMail,
   updateProfile,
+  returnUpdateMail,
 } from '../utils/index.js';
 
 export const adminIndex = asyncHandler(async (req, res) => {
@@ -139,11 +147,11 @@ export const addUserPost = asyncHandler(async (req, res) => {
     state,
     password,
     role,
+    isVerified: true,
   });
 
   await newUser.save();
 
-  // Use the email template
   const emailContent = welcomeEmail(newUser);
   await sendMail(emailContent);
 
@@ -170,12 +178,38 @@ export const updateAccountStatus = asyncHandler(async (req, res) => {
   }
 
   user.accountStatus = accountStatus;
+  user.failedLoginAttempts = 0;
   await user.save();
 
   const emailContent = accountStatusMail(user);
   await sendMail(emailContent);
 
-  res.status(200).json({ message: 'Account status updated successfully' });
+  res.status(200).json({ message: 'Status updated successfully' });
+});
+
+export const verifyAccount = asyncHandler(async (req, res) => {
+  const { userId, verifyStatus } = req.body;
+  const validStatuses = ['false', 'true'];
+
+  if (!validStatuses.includes(verifyStatus)) {
+    throw new HttpError(400, 'Invalid account status.');
+  }
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found',
+    });
+  }
+
+  user.isVerified = verifyStatus;
+  await user.save();
+
+  const emailContent = approveEmail(user);
+  await sendMail(emailContent);
+
+  res.status(200).json({ message: 'Access updated successfully' });
 });
 
 export const viewUser = asyncHandler(async (req, res) => {
@@ -285,32 +319,38 @@ export const addProductPost = asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, errors });
   }
 
-  const { category, size, material, totalQuantity, narration } = value;
-
+  const { category, size, totalQuantity, narration } = value;
   const existingProduct = await Product.findOne({
     category: category,
     size: size,
-    material: material,
   });
 
   if (existingProduct) {
-    throw new Conflict('Product already exists');
+    // If the product exists, update the quantity
+    existingProduct.totalQuantity += totalQuantity;
+    await existingProduct.save();
+
+    return res.status(200).json({
+      redirectUrl: '/admin/all-product',
+      success: true,
+      message: `Quantity added. The new total quantity for ${category} (${size}) is ${existingProduct.totalQuantity}.`,
+    });
+  } else {
+    const newProduct = new Product({
+      category,
+      size,
+      totalQuantity,
+      narration,
+    });
+
+    await newProduct.save();
+
+    return res.status(200).json({
+      redirectUrl: '/admin/all-product',
+      success: true,
+      message: `New product added successfully.`,
+    });
   }
-
-  const newProduct = new Product({
-    category,
-    size,
-    material,
-    totalQuantity,
-    narration,
-  });
-
-  await newProduct.save();
-
-  const redirectUrl = `/admin/all-product`;
-  res
-    .status(200)
-    .json({ redirectUrl, success: true, message: 'Product added successful' });
 });
 
 export const allProduct = (req, res) => {
@@ -351,7 +391,7 @@ export const editProductPost = asyncHandler(async (req, res) => {
       message: 'Product not found',
     });
   }
-  const { category, size, material, totalQuantity, narration } = req.body;
+  const { category, size, totalQuantity, narration } = req.body;
 
   const updatedProduct = await Product.findByIdAndUpdate(
     proId,
@@ -359,7 +399,6 @@ export const editProductPost = asyncHandler(async (req, res) => {
       $set: {
         category,
         size,
-        material,
         totalQuantity,
         narration,
       },
@@ -401,7 +440,7 @@ export const deleteProduct = asyncHandler(async (req, res) => {
   });
 });
 
-export const requestProduct = (req, res) => {
+export const requestProduct = asyncHandler(async (req, res) => {
   const user = req.currentUser;
   if (!res.paginatedResults) {
     return res.status(404).json({
@@ -410,14 +449,13 @@ export const requestProduct = (req, res) => {
     });
   }
   const { results, currentPage, totalPages } = res.paginatedResults;
-
   res.render('admin/request', {
     user,
     allRequest: results,
     currentPage,
     totalPages,
   });
-};
+});
 
 export const requestProductPost = asyncHandler(async (req, res) => {
   const { requestId, request_status } = req.body;
@@ -443,7 +481,6 @@ export const requestProductPost = asyncHandler(async (req, res) => {
     const product = await Product.findOne({
       category: request.category,
       size: request.size,
-      material: request.material,
     });
 
     if (!product) {
@@ -477,6 +514,147 @@ export const requestProductPost = asyncHandler(async (req, res) => {
   });
 });
 
+export const acceptRequest = (req, res) => {
+  const user = req.currentUser;
+  if (!res.paginatedResults) {
+    return res.status(404).json({
+      success: false,
+      message: 'Paginated results not found',
+    });
+  }
+  const { results, currentPage, totalPages } = res.paginatedResults;
+
+  res.render('admin/accept-request', {
+    user,
+    acptRequest: results,
+    currentPage,
+    totalPages,
+  });
+};
+
+export const rejectRequest = (req, res) => {
+  const user = req.currentUser;
+  if (!res.paginatedResults) {
+    return res.status(404).json({
+      success: false,
+      message: 'Paginated results not found',
+    });
+  }
+  const { results, currentPage, totalPages } = res.paginatedResults;
+
+  res.render('admin/reject-request', {
+    user,
+    rjtRequest: results,
+    currentPage,
+    totalPages,
+  });
+};
+
+export const returnProduct = (req, res) => {
+  const user = req.currentUser;
+  if (!res.paginatedResults) {
+    return res.status(404).json({
+      success: false,
+      message: 'Paginated results not found',
+    });
+  }
+  const { results, currentPage, totalPages } = res.paginatedResults;
+
+  res.render('admin/all-return', {
+    user,
+    returnProd: results,
+    currentPage,
+    totalPages,
+  });
+};
+
+export const returnProductPost = asyncHandler(async (req, res) => {
+  const { returnId, return_status } = req.body;
+  const validStatuses = ['Pending', 'Approved', 'Rejected'];
+
+  if (!validStatuses.includes(return_status)) {
+    throw new HttpError(400, 'Invalid request status.');
+  }
+
+  const returned = await Return.findById(returnId);
+  if (!returned) {
+    return res
+      .status(404)
+      .json({ success: false, message: 'Return not found.' });
+  }
+
+  const user = await User.findById(returned.userId);
+  if (!user) {
+    return res.status(404).json({ success: false, message: 'User not found.' });
+  }
+
+  if (return_status === 'Approved') {
+    const product = await Product.findOne({
+      category: returned.category,
+      size: returned.size,
+    });
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Product not found.' });
+    }
+
+    product.totalQuantity += returned.return_quantity;
+    await product.save();
+
+    returned.return_status = 'Approved';
+    await returned.save();
+  } else if (return_status === 'Rejected') {
+    returned.return_status = 'Rejected';
+    await returned.save();
+  }
+
+  const emailContent = returnUpdateMail(user, returned, return_status);
+  await sendMail(emailContent);
+
+  return res.status(200).json({
+    success: true,
+    message: `Return ${return_status} successfully.`,
+  });
+});
+
+export const acceptReturnProduct = (req, res) => {
+  const user = req.currentUser;
+  if (!res.paginatedResults) {
+    return res.status(404).json({
+      success: false,
+      message: 'Paginated results not found',
+    });
+  }
+  const { results, currentPage, totalPages } = res.paginatedResults;
+
+  res.render('admin/accept-return', {
+    user,
+    acptRequest: results,
+    currentPage,
+    totalPages,
+  });
+};
+
+export const rejectReturnProduct = (req, res) => {
+  const user = req.currentUser;
+  if (!res.paginatedResults) {
+    return res.status(404).json({
+      success: false,
+      message: 'Paginated results not found',
+    });
+  }
+  const { results, currentPage, totalPages } = res.paginatedResults;
+
+  res.render('admin/reject-return', {
+    user,
+    rjtReturn: results,
+    currentPage,
+    totalPages,
+  });
+};
+
 export const allWastages = (req, res) => {
   const user = req.currentUser;
   if (!res.paginatedResults) {
@@ -489,7 +667,7 @@ export const allWastages = (req, res) => {
 
   res.render('admin/all-wastage', {
     user,
-    allWastet: results,
+    allWaste: results,
     currentPage,
     totalPages,
   });
@@ -519,7 +697,6 @@ export const allWastagesPost = asyncHandler(async (req, res) => {
     const product = await Product.findOne({
       category: waste.category,
       size: waste.size,
-      material: waste.material,
     });
 
     if (!product) {
@@ -527,9 +704,6 @@ export const allWastagesPost = asyncHandler(async (req, res) => {
         .status(404)
         .json({ success: false, message: 'Product not found.' });
     }
-
-    product.totalQuantity += waste.waste_quantity;
-    await product.save();
 
     waste.waste_status = 'Approved';
     await waste.save();
@@ -546,6 +720,42 @@ export const allWastagesPost = asyncHandler(async (req, res) => {
     message: `Waste ${waste_status} successfully.`,
   });
 });
+
+export const acceptWaste = (req, res) => {
+  const user = req.currentUser;
+  if (!res.paginatedResults) {
+    return res.status(404).json({
+      success: false,
+      message: 'Paginated results not found',
+    });
+  }
+  const { results, currentPage, totalPages } = res.paginatedResults;
+
+  res.render('admin/accept-wastage', {
+    user,
+    acptWaste: results,
+    currentPage,
+    totalPages,
+  });
+};
+
+export const rejectWaste = (req, res) => {
+  const user = req.currentUser;
+  if (!res.paginatedResults) {
+    return res.status(404).json({
+      success: false,
+      message: 'Paginated results not found',
+    });
+  }
+  const { results, currentPage, totalPages } = res.paginatedResults;
+
+  res.render('admin/reject-wastage', {
+    user,
+    rjtWaste: results,
+    currentPage,
+    totalPages,
+  });
+};
 
 export const adminProfile = (req, res) => {
   const user = req.currentUser;

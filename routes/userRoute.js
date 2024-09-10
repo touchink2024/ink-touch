@@ -2,13 +2,16 @@ import { Router } from 'express';
 import { userImage } from '../configs/index.js';
 import { verifyUserToken, getUserById } from '../middlewares/index.js';
 import { paginatedResults, userRequestFilter } from '../utils/index.js';
-import { Wastage, RequestProduct } from '../models/index.js';
+import { Wastage, RequestProduct, Return } from '../models/index.js';
 import {
   userIndex,
   uploadUserImage,
   request,
   requestPost,
   allRequest,
+  prodReturn,
+  prodReturnPost,
+  allReturn,
   wastage,
   allWastage,
   wastagePost,
@@ -42,6 +45,16 @@ userRoute.get(
   getUserById,
   paginatedResults(RequestProduct, userRequestFilter),
   allRequest
+);
+
+userRoute.get('/return', verifyUserToken, getUserById, prodReturn);
+userRoute.post('/return', verifyUserToken, getUserById, prodReturnPost);
+userRoute.get(
+  '/allReturn',
+  verifyUserToken,
+  getUserById,
+  paginatedResults(Return, userRequestFilter),
+  allReturn
 );
 
 userRoute.get('/wastage', verifyUserToken, getUserById, wastage);

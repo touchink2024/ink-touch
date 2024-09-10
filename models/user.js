@@ -25,18 +25,6 @@ const userSchema = new mongoose.Schema(
         message: 'Please provide a valid phone number',
       },
     },
-    address: {
-      type: String,
-      trim: true,
-    },
-    city: {
-      type: String,
-      trim: true,
-    },
-    state: {
-      type: String,
-      trim: true,
-    },
     password: {
       type: String,
       select: false,

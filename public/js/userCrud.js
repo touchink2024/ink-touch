@@ -24,9 +24,6 @@ function showViewUserModal(button) {
               <tr><th>Full Name</th><td>${user.name || 'N/A'}</td></tr>
               <tr><th>Email</th><td>${user.email || 'N/A'}</td></tr>
               <tr><th>Number</th><td>${user.phone_number || 'N/A'}</td></tr>
-              <tr><th>Address</th><td>${user.address || 'N/A'}</td></tr>
-              <tr><th>City</th><td>${user.city || 'N/A'}</td></tr>
-              <tr><th>State</th><td>${user.state || 'N/A'}</td></tr>
               <tr><th>Date Added</th><td>${new Date(
                 user.createdAt
               ).toLocaleDateString('en-US', {
@@ -81,15 +78,6 @@ function showEditUserModal(button) {
     }"></td></tr>
     <tr><th>Number</th><td><input style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" type="text" id="phone_number" name="phone_number" value="${
       user.phone_number || ''
-    }"></td></tr>
-    <tr><th>Address</th><td><input style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" type="text" id="address" name="address" value="${
-      user.address || ''
-    }"></td></tr>
-    <tr><th>City</th><td><input style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" type="text" id="city" name="city" value="${
-      user.city || ''
-    }"></td></tr>
-    <tr><th>State</th><td><input style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" type="text" id="state" name="state" value="${
-      user.state || ''
     }"></td></tr>
     <tr><th>Role</th>
       <td>

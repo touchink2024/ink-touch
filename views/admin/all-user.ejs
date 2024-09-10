@@ -73,9 +73,9 @@
                   
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Number</th>
                     <th scope="col">Role</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Grant Access</th>
                     <th scope="col" >Action</th>
                   </tr>
                 </thead>
@@ -84,14 +84,19 @@
                   <tr class="center">
                     <td><%= user.name %></td>
                     <td><%= user.email %></td>
-                    <td><%= user.phone_number %></td>
                     <td><%= user.role %></td>
                     <td>
                       <select class="form-select account-status-select" data-user-id="<%= user._id %>">
-                          <option value="Active" <%= user.accountStatus === 'Active' ? 'selected' : '' %>>Active</option>
-                          <option value="Locked" <%= user.accountStatus === 'Locked' ? 'selected' : '' %>>Locked</option>
+                        <option value="Active" <%= user.accountStatus === 'Active' ? 'selected' : '' %>>Active</option>
+                        <option value="Locked" <%= user.accountStatus === 'Locked' ? 'selected' : '' %>>Locked</option>
                       </select>
-                  </td>
+                    </td>
+                    <td>
+                      <select class="form-select account-verify-select" data-verify-id="<%= user._id %>">
+                        <option value="false" <%= !user.isVerified ? 'selected' : '' %>>false</option>
+                        <option value="true" <%= user.isVerified ? 'selected' : '' %>>true</option>
+                      </select>
+                    </td>
                   <td>
                     <button type="button" class="btn btn-warning" data-user-id="<%= user._id %>"
                       onclick="showEditUserModal(this)">Edit</button>
@@ -201,5 +206,6 @@
     </script> -->
      <script src="../js/updateStatus.js"></script>
      <script src="../js/userCrud.js"></script>
+     <script src="../js/verifyAccount.js"></script>
   </body>
 </html>

@@ -65,9 +65,9 @@
               style="display: none"
             ></div>
             <div class="container">
-              <header>Request Product</header>
+              <header>Submit Return</header>
 
-              <form id="requestProductForm" data-url="/user/request">
+              <form id="returnSubmitForm" data-url="/user/return">
                 <div class="form first">
                   <div class="details personal">
                     <div class="fields">
@@ -76,8 +76,7 @@
                         <input
                           type="text"
                           name="ref"
-                          value="<%= ref %>"
-                          readonly
+                          placeholder="Enter ref number"
                         />
                         <div id="refError" class="text-danger"></div>
                       </div>
@@ -116,14 +115,14 @@
                       </div>
 
                       <div class="input-field">
-                        <label>Request Quantity</label>
+                        <label>Quantity</label>
                         <input
                           type="number"
-                          name="quantity_requested"
+                          name="return_quantity"
                           placeholder="Enter Quantity"
                         />
                         <div
-                          id="quantity_requestedError"
+                          id="return_quantityError"
                           class="text-danger"
                         ></div>
                       </div>
@@ -166,7 +165,8 @@
         ><i class="bi bi-arrow-up"></i
       ></a>
     </div>
+
     <script src="../../js/add-product.js"></script>
-    <script src="../../mail/request-product.js"></script>
+    <script src="../../mail/return-submit.js"></script>
   </body>
 </html>

@@ -4,7 +4,6 @@ export const signUpSchema = Joi.object({
   name: Joi.string().trim().required().messages({
     'string.empty': 'Name is required',
   }),
-
   email: Joi.string().email().required().messages({
     'string.empty': 'Email is required',
     'string.email': 'Email must be valid',

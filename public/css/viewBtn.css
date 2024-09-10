@@ -109,3 +109,14 @@ edit popup */
 .pagination > a:hover {
   background-color: lightblue;
 }
+.countBox {
+  background-color: red;
+  color: white;
+  padding: 4px 8px;
+  font-size: 10px;
+  border-radius: 5px;
+  min-width: 10px;
+  text-align: center;
+  display: inline-block;
+  font-weight: bold;
+}

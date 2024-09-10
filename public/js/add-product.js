@@ -26,10 +26,10 @@ document.getElementById('category').addEventListener('change', function () {
     sizes = [
       '4 ft',
       '5 ft',
-      '4/5 ft',
-      'Relf sav 4/5 ft',
+      '4_5 ft',
+      'Relf sav 4_5 ft',
       'pvc',
-      'Clear sticker 4&5 ft',
+      'Clear sticker 4_5 ft',
       'Paper 3 ft',
       'Paper 4 ft',
       'Paper 5 ft',
@@ -44,35 +44,4 @@ document.getElementById('category').addEventListener('change', function () {
     option.textContent = size;
     sizeSelect.appendChild(option);
   });
-});
-
-// Handle size change
-document.getElementById('size').addEventListener('change', function () {
-  const selectedCategory = document.getElementById('category').value;
-  const selectedSize = this.value;
-  const selectedMaterial = document.querySelector(
-    'input[name="material"]'
-  ).value;
-
-  if (selectedCategory && selectedSize && selectedMaterial) {
-    fetch(
-      `/product-details?category=${selectedCategory}&size=${selectedSize}&material=${selectedMaterial}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.totalQuantity !== undefined) {
-          document.getElementById(
-            'quantityDisplay'
-          ).textContent = `Remaining Quantity: ${data.totalQuantity}`;
-        } else {
-          document.getElementById('quantityDisplay').textContent =
-            'Product not found';
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching product details:', error);
-        document.getElementById('quantityDisplay').textContent =
-          'Error fetching product details';
-      });
-  }
 });

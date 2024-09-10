@@ -1,7 +1,24 @@
 import { Router } from 'express';
-import { paginatedResults } from '../utils/index.js';
-import { User, Product, RequestProduct, Wastage } from '../models/index.js';
 import { adminImage } from '../configs/index.js';
+import {
+  User,
+  Product,
+  RequestProduct,
+  Wastage,
+  Return,
+} from '../models/index.js';
+import {
+  paginatedResults,
+  rejectedRequestFilter,
+  acceptRequestFilter,
+  pendingRequestFilter,
+  acceptReturnFilter,
+  rejectedReturnFilter,
+  pendingReturnFilter,
+  pendingWasteFilter,
+  acceptWasteFilter,
+  rejectedWasteFilter,
+} from '../utils/index.js';
 import {
   verifyUserToken,
   getAdminById,
@@ -14,6 +31,7 @@ import {
   addUser,
   addUserPost,
   updateAccountStatus,
+  verifyAccount,
   viewUser,
   editUser,
   editUserPost,
@@ -26,8 +44,16 @@ import {
   deleteProduct,
   requestProduct,
   requestProductPost,
+  acceptRequest,
+  rejectRequest,
+  returnProduct,
+  returnProductPost,
+  acceptReturnProduct,
+  rejectReturnProduct,
   allWastages,
   allWastagesPost,
+  acceptWaste,
+  rejectWaste,
   adminProfile,
   adminProfilePost,
   adminLogout,
@@ -66,6 +92,8 @@ adminRoute.post(
   getAdminById,
   updateAccountStatus
 );
+adminRoute.post('/verifyAccount', verifyUserToken, getAdminById, verifyAccount);
+
 adminRoute.get('/user/:userId', verifyUserToken, getAdminById, viewUser);
 adminRoute.get('/editUser/:userId', verifyUserToken, getAdminById, editUser);
 adminRoute.put(
@@ -103,21 +131,77 @@ adminRoute.delete('/product/:Id', verifyUserToken, getAdminById, deleteProduct);
 
 adminRoute.get(
   '/request',
-  paginatedResults(RequestProduct),
+  paginatedResults(RequestProduct, pendingRequestFilter),
   verifyUserToken,
   getAdminById,
   requestProduct
 );
 adminRoute.post('/request', verifyUserToken, getAdminById, requestProductPost);
+adminRoute.get(
+  '/accept-request',
+  paginatedResults(RequestProduct, acceptRequestFilter),
+  verifyUserToken,
+  getAdminById,
+  acceptRequest
+);
+adminRoute.get(
+  '/reject-request',
+  paginatedResults(RequestProduct, rejectedRequestFilter),
+  verifyUserToken,
+  getAdminById,
+  rejectRequest
+);
+
+adminRoute.get(
+  '/all-return',
+  paginatedResults(Return, pendingReturnFilter),
+  verifyUserToken,
+  getAdminById,
+  returnProduct
+);
+adminRoute.post(
+  '/all-return',
+  verifyUserToken,
+  getAdminById,
+  returnProductPost
+);
+adminRoute.get(
+  '/accept-return',
+  paginatedResults(Return, acceptReturnFilter),
+  verifyUserToken,
+  getAdminById,
+  acceptReturnProduct
+);
+adminRoute.get(
+  '/reject-return',
+  paginatedResults(Return, rejectedReturnFilter),
+  verifyUserToken,
+  getAdminById,
+  rejectReturnProduct
+);
 
 adminRoute.get(
   '/all-wastage',
-  paginatedResults(Wastage),
+  paginatedResults(Wastage, pendingWasteFilter),
   verifyUserToken,
   getAdminById,
   allWastages
 );
 adminRoute.post('/all-wastage', verifyUserToken, getAdminById, allWastagesPost);
+adminRoute.get(
+  '/accept-wastage',
+  paginatedResults(Wastage, acceptWasteFilter),
+  verifyUserToken,
+  getAdminById,
+  acceptWaste
+);
+adminRoute.get(
+  '/reject-wastage',
+  paginatedResults(Wastage, rejectedWasteFilter),
+  verifyUserToken,
+  getAdminById,
+  rejectWaste
+);
 
 adminRoute.get('/profile', verifyUserToken, getAdminById, adminProfile);
 adminRoute.put('/profile', verifyUserToken, getAdminById, adminProfilePost);

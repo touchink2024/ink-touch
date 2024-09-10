@@ -67,33 +67,111 @@
 
       <div class="nav-item dropdown">
         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
-          ><i class="fa fa-laptop me-2"></i>Users</a
+          ><i class="fa fa-user me-2"></i>Users</a
         >
         <div class="dropdown-menu bg-transparent border-0">
-          <a href="/admin/add-user" class="dropdown-item">add User</a>
-          <a href="/admin/all-user" class="dropdown-item">All User</a>
+          <a href="/admin/add-user" class="nav-link dropdown-item"
+            ><i class="fa fa-user me-2"></i>Add User</a
+          >
+          <a href="/admin/all-user" class="nav-link dropdown-item"
+            ><i class="fa fa-user me-2"></i>All User</a
+          >
         </div>
       </div>
       <div class="nav-item dropdown">
         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
-          ><i class="fa fa-laptop me-2"></i>Products</a
+          ><i class="fa fa-th me-2"></i>Products</a
         >
         <div class="dropdown-menu bg-transparent border-0">
-          <a href="/admin/add-product" class="dropdown-item">add Product</a>
-          <a href="/admin/all-product" class="dropdown-item">All Product</a>
+          <a href="/admin/add-product" class="nav-link dropdown-item"
+            ><i class="fa fa-th me-2"></i>Add Product</a
+          >
+          <a href="/admin/all-product" class="nav-link dropdown-item"
+            ><i class="fa fa-th me-2"></i>All Product</a
+          >
         </div>
       </div>
-      <a href="/admin/request" class="nav-item nav-link"
-        ><i class="fa fa-th me-2"></i>Request</a
-      >
-      <a href="/admin/all-Wastage" class="nav-item nav-link"
-        ><i class="fa fa-th me-2"></i>Wastage</a
-      >
+
+      <div class="nav-item dropdown">
+        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+          ><i class="fa fa-th me-2"></i>Request
+          <span class="countBox"> <%= requestCount %></span></a
+        >
+        <div class="dropdown-menu bg-transparent border-0">
+          <a href="/admin/request" class="nav-link dropdown-item"
+            ><i class="fa fa-th me-2"></i>New Request</a
+          >
+          <a href="/admin/accept-request" class="nav-link dropdown-item"
+            ><i class="fa fa-th me-2"></i>Accept Request</a
+          >
+
+          <a href="/admin/reject-request" class="nav-link dropdown-item"
+            ><i class="fa fa-th me-2"></i>Reject Request</a
+          >
+        </div>
+      </div>
+
+      <div class="nav-item dropdown">
+        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+          ><i class="fa fa-share-square me-2"></i>Return
+          <span class="countBox"> <%= returnCount %></span></a
+        >
+        <div class="dropdown-menu bg-transparent border-0">
+          <a href="/admin/all-return" class="nav-link dropdown-item"
+            ><i class="fa fa-share-square me-2"></i>New Return</a
+          >
+          <a href="/admin/accept-return" class="nav-link dropdown-item"
+            ><i class="fa fa-share-square me-2"></i>Accept Return</a
+          >
+
+          <a href="/admin/reject-return" class="nav-link dropdown-item"
+            ><i class="fa fa-share-square me-2"></i>Reject Return</a
+          >
+        </div>
+      </div>
+
+      <div class="nav-item dropdown">
+        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+          ><i class="fa fa-trash me-2"></i>Wastage
+          <span class="countBox"> <%= wasteCount %></span></a
+        >
+        <div class="dropdown-menu bg-transparent border-0">
+          <a href="/admin/all-Wastage" class="nav-link dropdown-item"
+            ><i class="fa fa-trash me-2"></i>New Wastage</a
+          >
+          <a href="/admin/accept-Wastage" class="nav-link dropdown-item"
+            ><i class="fa fa-trash me-2"></i>Accept Wastage</a
+          >
+
+          <a href="/admin/reject-Wastage" class="nav-link dropdown-item"
+            ><i class="fa fa-trash me-2"></i>Reject Wastage</a
+          >
+        </div>
+      </div>
+
+      <div class="nav-item dropdown">
+        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+          ><i class="fa fa-flag me-2"></i>Report</a
+        >
+        <div class="dropdown-menu bg-transparent border-0">
+          <a href="/admin/all-Wastage" class="nav-link dropdown-item"
+            ><i class="fa fa-trash me-2"></i>New Wastage</a
+          >
+          <a href="/admin/accept-Wastage" class="nav-link dropdown-item"
+            ><i class="fa fa-trash me-2"></i>Accept Wastage</a
+          >
+
+          <a href="/admin/reject-Wastage" class="nav-link dropdown-item"
+            ><i class="fa fa-trash me-2"></i>Reject Wastage</a
+          >
+        </div>
+      </div>
+
       <a
         data-url="/admin/logout"
         class="nav-item nav-link signOutLink"
         style="cursor: pointer"
-        ><i class="fa fa-keyboard me-2"></i>Log out</a
+        ><i class="fa fa-power-off me-2"></i>Log out</a
       >
     </div>
   </nav>

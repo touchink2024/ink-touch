@@ -73,14 +73,13 @@
                     <th scope="col">User</th>
                     <th scope="col">Category</th>
                     <th scope="col">Size</th>
-                    <th scope="col">Material</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">narration</th>
                     <th scope="col">Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <% allWastet.forEach(waste => { %>
+                  <% allWaste.forEach(waste => { %>
                     <tr>
                       <td>
                         <%= new Date(waste.createdAt).toLocaleString('en-NG', {
@@ -90,7 +89,6 @@
                       <td><%= waste.operator %></td>
                       <td><%= waste.category %></td>
                       <td><%= waste.size %></td>
-                      <td><%= waste.material %></td>
                       <td><%= waste.waste_quantity %></td>
                       <td><%= waste.narration%></td>
                       <td>

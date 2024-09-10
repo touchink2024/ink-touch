@@ -39,9 +39,6 @@ function showEditProductModal(button) {
                 </select>
               </td>
             </tr>
-            <tr><th>Material</th><td><input style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" type="text" id="material" name="material" value="${
-              product.material || ''
-            }"></td></tr>
             <tr><th>Quantity</th><td><input style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" type="number" id="totalQuantity" name="totalQuantity" value="${
               product.totalQuantity || ''
             }"></td></tr>

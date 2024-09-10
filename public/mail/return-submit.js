@@ -1,21 +1,21 @@
 'use strict';
 document.addEventListener('DOMContentLoaded', function () {
-  const addProductForm = document.getElementById('addProductForm');
+  const returnSubmitForm = document.getElementById('returnSubmitForm');
 
-  addProductForm.addEventListener('submit', async function (event) {
+  returnSubmitForm.addEventListener('submit', async function (event) {
     event.preventDefault();
 
-    const addProductUrl = addProductForm.getAttribute('data-url');
-    const submitButton = document.getElementById('sbtns');
+    const returnSubmitUrl = returnSubmitForm.getAttribute('data-url');
+    const submitButton = document.getElementById('subtns');
 
     submitButton.innerHTML =
       '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
     submitButton.disabled = true;
 
     try {
-      const formData = new FormData(addProductForm);
+      const formData = new FormData(returnSubmitForm);
       const formObject = Object.fromEntries(formData.entries());
-      const response = await fetch(addProductUrl, {
+      const response = await fetch(returnSubmitUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        alert(data.message);
+        alert('Return sent successfully');
         setTimeout(() => {
           window.location.href = data.redirectUrl;
         }, 100);

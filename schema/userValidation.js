@@ -13,14 +13,33 @@ export const requestSchema = Joi.object({
   size: Joi.string().trim().required().messages({
     'string.empty': 'Size is required',
   }),
-  material: Joi.string().trim().required().messages({
-    'string.empty': 'Material is required',
-  }),
   quantity_requested: Joi.number().required().messages({
     'number.base': 'Quantity must be a number',
     'any.required': 'Quantity is required',
   }),
-  narration: Joi.string().trim().required().messages({
+  narration: Joi.string().trim().allow(null, '').optional().messages({
+    'string.empty': 'narration is required',
+  }),
+});
+
+export const returnSchema = Joi.object({
+  ref: Joi.string().trim().required().messages({
+    'string.empty': 'Ref is required',
+  }),
+  operator: Joi.string().trim().required().messages({
+    'string.empty': 'Operator is required',
+  }),
+  category: Joi.string().trim().required().messages({
+    'string.empty': 'Category is required',
+  }),
+  size: Joi.string().trim().required().messages({
+    'string.empty': 'Size is required',
+  }),
+  return_quantity: Joi.number().required().messages({
+    'number.base': 'Quantity must be a number',
+    'any.required': 'Quantity is required',
+  }),
+  narration: Joi.string().trim().allow(null, '').optional().messages({
     'string.empty': 'narration is required',
   }),
 });
@@ -38,14 +57,11 @@ export const wasteSchema = Joi.object({
   size: Joi.string().trim().required().messages({
     'string.empty': 'Size is required',
   }),
-  material: Joi.string().trim().required().messages({
-    'string.empty': 'Material is required',
-  }),
   waste_quantity: Joi.number().required().messages({
     'number.base': 'Quantity must be a number',
     'any.required': 'Quantity is required',
   }),
-  narration: Joi.string().trim().required().messages({
+  narration: Joi.string().trim().allow(null, '').optional().messages({
     'string.empty': 'narration is required',
   }),
 });
@@ -75,15 +91,5 @@ export const updateProfileSchema = Joi.object({
     'string.empty': 'New password is required',
     'string.min': 'New password must be at least {#limit} characters',
     'any.required': 'New password is required',
-  }),
-
-  address: Joi.string().trim().required().messages({
-    'string.empty': 'Address is required',
-  }),
-  city: Joi.string().trim().required().messages({
-    'string.empty': 'City is required',
-  }),
-  state: Joi.string().trim().required().messages({
-    'string.empty': 'State is required',
   }),
 });

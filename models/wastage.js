@@ -18,10 +18,6 @@ const wastageSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    material: {
-      type: String,
-      trim: true,
-    },
     waste_quantity: {
       type: Number,
       trim: true,

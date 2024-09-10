@@ -16,6 +16,7 @@ document.querySelectorAll('.account-status-select').forEach((select) => {
       .then((data) => {
         if (data.message) {
           alert(data.message);
+          location.reload();
         } else {
           alert('Error updating account status');
         }

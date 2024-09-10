@@ -10,10 +10,6 @@ const productSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    material: {
-      type: String,
-      trim: true,
-    },
     narration: {
       type: String,
       trim: true,

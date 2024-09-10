@@ -1,16 +1,16 @@
 'use strict';
-document.querySelectorAll('.account-status-select').forEach((select) => {
+document.querySelectorAll('.account-verify-select').forEach((select) => {
   select.addEventListener('change', function () {
-    const wasteId = this.getAttribute('data-waste-id');
-    const waste_status = this.value;
-    const endpoint = `/admin/all-wastage`;
+    const userId = this.getAttribute('data-verify-id');
+    const verifyStatus = this.value;
+    const endpoint = `/admin/verifyAccount`;
 
     fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ wasteId, waste_status }),
+      body: JSON.stringify({ userId, verifyStatus }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -18,12 +18,12 @@ document.querySelectorAll('.account-status-select').forEach((select) => {
           alert(data.message);
           location.reload();
         } else {
-          alert('Error updating waste status');
+          alert('Error updating account status');
         }
       })
       .catch((error) => {
         console.error('Error:', error);
-        alert('Error updating waste status');
+        alert('Error updating account status');
       });
   });
 });

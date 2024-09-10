@@ -5,6 +5,7 @@ import {
 } from './authValidation.js';
 import {
   requestSchema,
+  returnSchema,
   wasteSchema,
   updateProfileSchema,
 } from './userValidation.js';
@@ -20,6 +21,7 @@ export {
   addUserSchema,
   //user
   requestSchema,
+  returnSchema,
   wasteSchema,
   updateProfileSchema,
 };

@@ -1,25 +1,34 @@
 import { config } from '../configs/index.js';
 
-export const verifyEmailOtp = (user, otp, otpExpiryHours) => ({
+export const awaitingVerifyEmail = (newUser) => ({
   from: config.nodemailerEmail,
-  to: user.email,
-  subject: 'Your 6-digit Verification Code',
-  html: `
-    <p>Hello ${user.name},</p>
-    <p>Use the 6-digit Code provided below to verify your email:</p>
-    <p>Your verification code is: <b>${otp}</b></p>
-    <p>This code will expire in ${otpExpiryHours} hours.</p>
-    <p>If you didn't register, please ignore this email.</p>
-    <p>Best regards,<br>Ink Touch CEO,</p>`,
+  to: newUser.email,
+  subject: 'Welcome to Ink Touch Printing',
+  html: `<p>Hello ${newUser.name},</p>
+      <p>Welcome to Ink Touch Printing!</p>
+      <p>Your account has been successfully created, kindly contact admin to approve your registration.</p>
+      <p>Should you have any inquiries or require assistance, please don't hesitate to contact our support team at <a href="tel:${config.companyNumber}">${config.companyNumber}</a> or <a href="mailto:${config.companyEmail}">${config.companyEmail}</a>.Your satisfaction is our priority, and we are committed to providing you with the assistance you need.</p>
+      <p>Best regards,<br>Ink Touch CEO,</p>`,
 });
 
-export const welcomeEmail = (user) => ({
+export const welcomeEmail = (newUser) => ({
+  from: config.nodemailerEmail,
+  to: newUser.email,
+  subject: 'Welcome to Ink Touch Printing',
+  html: `<p>Hello ${newUser.name},</p>
+      <p>Welcome to Ink Touch Printing!</p>
+      <p>Your account has been successfully created, granting you access to our platform's exciting features.</p>
+      <p>Should you have any inquiries or require assistance, please don't hesitate to contact our support team at <a href="tel:${config.companyNumber}">${config.companyNumber}</a> or <a href="mailto:${config.companyEmail}">${config.companyEmail}</a>.Your satisfaction is our priority, and we are committed to providing you with the assistance you need.</p>
+      <p>Best regards,<br>Ink Touch CEO,</p>`,
+});
+
+export const approveEmail = (user) => ({
   from: config.nodemailerEmail,
   to: user.email,
   subject: 'Welcome to Ink Touch Printing',
   html: `<p>Hello ${user.name},</p>
       <p>Welcome to Ink Touch Printing!</p>
-      <p>Your account has been successfully created, granting you access to our platform's exciting features.</p>
+      <p>Your account has been successfully activated, granting you access to our platform's exciting features.</p>
       <p>Should you have any inquiries or require assistance, please don't hesitate to contact our support team at <a href="tel:${config.companyNumber}">${config.companyNumber}</a> or <a href="mailto:${config.companyEmail}">${config.companyEmail}</a>.Your satisfaction is our priority, and we are committed to providing you with the assistance you need.</p>
       <p>Best regards,<br>Ink Touch CEO,</p>`,
 });
@@ -93,9 +102,26 @@ export const requestProductMail = (user, requestProduct) => ({
      <ul>
        <li>Category: ${requestProduct.category}</li>
        <li>Size: ${requestProduct.size}</li>
-       <li>Material: ${requestProduct.material}</li>
        <li>Quantity Requested: ${requestProduct.quantity_requested}</li>
        <li>Narration: ${requestProduct.narration}</li>
+     </ul>
+       
+    <p>Best regards,<br>Ink Touch CEO,</p>`,
+});
+
+export const returnProductMail = (user, newReturn) => ({
+  from: config.nodemailerEmail,
+  to: user.email,
+  subject: 'Return Submission Confirmation',
+  html: `
+     <p>Hello ${user.name},</p>
+     <p>Your return submission with reference number ${newReturn.ref} has been submitted.</p>
+     <p><strong>Return Details:</strong></p>
+     <ul>
+       <li>Category: ${newReturn.category}</li>
+       <li>Size: ${newReturn.size}</li>
+       <li>Quantity Requested: ${newReturn.return_quantity}</li>
+       <li>Narration: ${newReturn.narration}</li>
      </ul>
        
     <p>Best regards,<br>Ink Touch CEO,</p>`,
@@ -112,7 +138,6 @@ export const wasteProductMail = (user, newWastage) => ({
      <ul>
        <li>Category: ${newWastage.category}</li>
        <li>Size: ${newWastage.size}</li>
-       <li>Material: ${newWastage.material}</li>
        <li>Quantity Requested: ${newWastage.waste_quantity}</li>
        <li>Narration: ${newWastage.narration}</li>
      </ul>
@@ -134,9 +159,6 @@ export const updateProfile = (user, updatedUser) => ({
         <li>Full Name: ${updatedUser.name}</li>
         <li>Email Address: ${updatedUser.email}</li>
         <li>Phone Number: ${updatedUser.phone_number}</li>
-        <li>Home Address: ${updatedUser.address}</li>
-        <li>City: ${updatedUser.city}</li>
-         <li>State: ${updatedUser.state}</li>
     </ul>
       
     <p>Please review the changes to ensure that they accurately reflect your information. If you believe any information is incorrect or if you have any questions regarding the update, please don't hesitate to reach out to our administrative team at <a href="tel:${config.companyNumber}">${config.companyNumber}</a> or <a href="mailto:${config.companyEmail}">${config.companyEmail}</a>. Your satisfaction is important to us, and we are here to assist you.</p>
@@ -156,6 +178,26 @@ export const requestUpdateMail = (user, request, request_status) => ({
     <p>Your request (Ref Number: ${
       request.ref
     }) has been ${request_status.toLowerCase()}.\n\nThank you..</p>
+      
+    <p>If you believe any information is incorrect or if you have any questions regarding the update, please don't hesitate to reach out to our administrative team at <a href="tel:${
+      config.companyNumber
+    }">${config.companyNumber}</a> or <a href="mailto:${config.companyEmail}">${
+    config.companyEmail
+  }</a>. Your satisfaction is important to us.</p>
+
+    <p>Best regards,<br>Ink Touch CEO,</p>`,
+});
+
+export const returnUpdateMail = (user, returned, return_status) => ({
+  from: config.nodemailerEmail,
+  to: user.email,
+  subject: `Wastage ${return_status}`,
+  html: `
+      
+    <p>Dear ${user.name}</p>
+    <p>Your waste (Ref Number: ${
+      returned.ref
+    }) has been ${return_status.toLowerCase()}.\n\nThank you..</p>
       
     <p>If you believe any information is incorrect or if you have any questions regarding the update, please don't hesitate to reach out to our administrative team at <a href="tel:${
       config.companyNumber

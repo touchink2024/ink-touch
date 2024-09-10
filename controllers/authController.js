@@ -1,10 +1,8 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import bcrypt from 'bcryptjs';
 import { config } from '../configs/index.js';
 import { Conflict, HttpError } from '../middlewares/index.js';
 import { User } from '../models/index.js';
-import { sendMail, generateOTP } from '../utils/index.js';
 import { asyncHandler } from '../helper/index.js';
 import {
   signUpSchema,
@@ -12,10 +10,10 @@ import {
   loginSchema,
 } from '../schema/index.js';
 import {
+  sendMail,
   sanitizeInput,
   sanitizeObject,
-  verifyEmailOtp,
-  welcomeEmail,
+  awaitingVerifyEmail,
   forgetPasswordEmail,
   resetPasswordEmail,
   loginEmail,
@@ -47,80 +45,24 @@ export const signUpPost = asyncHandler(async (req, res) => {
     }
   }
 
-  const { otp, hashedOTP } = await generateOTP();
   const newUser = new User({
     email,
     name,
     password,
-    verificationCode: hashedOTP,
+    isVerified: false,
   });
-
   await newUser.save();
 
-  const otpExpiryHours = 24;
-  const emailContent = verifyEmailOtp(newUser, otp, otpExpiryHours);
+  const emailContent = awaitingVerifyEmail(newUser);
   await sendMail(emailContent);
 
-  req.session.tempEmail = email;
-
-  const redirectUrl = `/auth/verify-email`;
-  req.session.msg = 'Registration successful. Please verify your email';
+  const redirectUrl = `/auth/login`;
+  req.session.msg =
+    'Registration successful. Kindly contact admin to verify your email';
   res.status(200).json({
     redirectUrl,
     success: true,
-    message: 'Registration successful. Please verify your email',
-  });
-});
-
-export const verifyEmail = (req, res) => {
-  const msg = req.session.msg;
-  req.session.msg = null;
-  res.render('auth/verify-email', { msg });
-};
-
-export const verifyEmailPost = asyncHandler(async (req, res) => {
-  const { inputOTP } = req.body;
-
-  const email = req.session.tempEmail;
-  if (!email) {
-    return res
-      .status(400)
-      .json({ success: false, message: 'Session expired or email not found' });
-  }
-
-  const user = await User.findOne({ email });
-  if (!user || !user.verificationCode) {
-    return res
-      .status(404)
-      .json({ success: false, message: 'No OTP found or user not found' });
-  }
-
-  const isMatch = await bcrypt.compare(inputOTP, user.verificationCode);
-  if (!isMatch) {
-    return res.status(400).json({ success: false, message: 'Invalid OTP' });
-  }
-
-  const otpCreationDate = user.createdAt;
-  const otpExpiry = new Date(otpCreationDate.getTime() + 24 * 60 * 60 * 1000);
-
-  if (new Date() > otpExpiry) {
-    return res.status(400).json({ success: false, message: 'OTP expired' });
-  }
-
-  user.isVerified = true;
-  user.verificationCode = null;
-  await user.save();
-
-  req.session.tempEmail = null;
-
-  const emailContent = welcomeEmail(user);
-  await sendMail(emailContent);
-
-  req.session.message = 'Email verification successful!';
-  res.status(200).json({
-    success: true,
-    message: 'Email verification successful!',
-    redirectUrl: '/auth/login',
+    message: 'Registration successful. ',
   });
 });
 
@@ -239,11 +181,11 @@ export const resetPasswordPost = asyncHandler(async (req, res) => {
 export const login = (req, res) => {
   const errorMessage = req.session.authErrorMessage;
   const message = req.session.message;
-  const msge = req.session.msge;
+  const msg = req.session.msg;
   req.session.message = null;
-  req.session.msge = null;
   req.session.errorMessage = null;
-  res.render('auth/login', { message, msge, errorMessage });
+  req.session.msg = null;
+  res.render('auth/login', { message, msg, errorMessage });
 };
 
 export const loginPost = asyncHandler(async (req, res) => {
@@ -272,17 +214,19 @@ export const loginPost = asyncHandler(async (req, res) => {
   const isPasswordValid = await user.matchPassword(password);
   if (!isPasswordValid) {
     user.failedLoginAttempts += 1;
-    await user.save();
 
     if (user.failedLoginAttempts >= config.maxFailedAttempt) {
       user.accountLocked = true;
+      user.accountStatus = 'Locked';
       await user.save();
+
       return res.status(423).json({
         success: false,
         message: 'Account locked. Contact support.',
       });
     }
 
+    await user.save();
     return res.status(401).json({
       success: false,
       message: `Invalid credentials. ${
@@ -304,11 +248,10 @@ export const loginPost = asyncHandler(async (req, res) => {
   if (!user.isVerified) {
     return res.status(412).json({
       success: false,
-      message: 'Kindly verify your email before login.',
+      message: 'Verify your account with admin before login.',
     });
   }
 
-  // Successful PIN verification
   const accessToken = jwt.sign(
     { id: user._id, role: user.role },
     config.jwtSecret,
@@ -316,7 +259,10 @@ export const loginPost = asyncHandler(async (req, res) => {
   );
   req.session.accessToken = accessToken;
 
-  let redirectUrl = user.role === 'Admin' ? '/admin/index' : '/user/index';
+  let redirectUrl =
+    user.role === 'Admin' || user.role === 'Super_Admin'
+      ? '/admin/index'
+      : '/user/index';
 
   const emailContent = loginEmail(user);
   await sendMail(emailContent);

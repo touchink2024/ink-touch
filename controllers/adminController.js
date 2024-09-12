@@ -833,10 +833,61 @@ export const adminProfilePost = asyncHandler(async (req, res) => {
   });
 });
 
-export const userReport = (req, res) => {
+export const userReport = asyncHandler(async (req, res) => {
   const user = req.currentUser;
-  res.render('admin/user-report', { user });
-};
+  const users = await User.find({}, 'name');
+  if (!users || users.length === 0) {
+    return res
+      .status(404)
+      .json({ success: false, message: 'Users not found.' });
+  }
+  res.render('admin/user-report', { user, users });
+});
+
+export const getOperatorReport = asyncHandler(async (req, res) => {
+  const { operator, event } = req.query;
+
+  let reportData;
+
+  // Fetch data based on event type
+  if (event === 'Requests') {
+    reportData = await RequestProduct.find({ operator });
+  } else if (event === 'Wastages') {
+    reportData = await WastageModel.find({ operator });
+  } else if (event === 'Returns') {
+    reportData = await ReturnModel.find({ operator });
+  }
+
+  if (!reportData || reportData.length === 0) {
+    return res.status(404).json({ error: 'No data found' });
+  }
+
+  res.json(reportData);
+});
+
+export const materialReport = asyncHandler(async (req, res) => {
+  const user = req.currentUser;
+  const users = await User.find({}, 'name');
+  if (!users || users.length === 0) {
+    return res
+      .status(404)
+      .json({ success: false, message: 'Users not found.' });
+  }
+  res.render('admin/material-report', { user, users });
+});
+
+
+export const searchReport = asyncHandler(async (req, res) => {
+  const user = req.currentUser;
+  const users = await User.find({}, 'name');
+  if (!users || users.length === 0) {
+    return res
+      .status(404)
+      .json({ success: false, message: 'Users not found.' });
+  }
+  res.render('admin/material-report', { user, users });
+});
+
 
 export const adminLogout = asyncHandler(async (req, res) => {
   const accessToken = req.cookies.accessToken;

@@ -59,6 +59,9 @@ import {
   adminProfile,
   adminProfilePost,
   userReport,
+  getOperatorReport,
+  materialReport,
+  searchReport,
   adminLogout,
 } from './adminController.js';
 
@@ -121,5 +124,8 @@ export {
   adminProfile,
   adminProfilePost,
   userReport,
+  getOperatorReport,
+  materialReport,
+  searchReport,
   adminLogout,
 };

@@ -57,6 +57,9 @@ import {
   adminProfile,
   adminProfilePost,
   userReport,
+  getOperatorReport,
+  materialReport,
+  searchReport,
   adminLogout,
 } from '../controllers/index.js';
 
@@ -208,6 +211,20 @@ adminRoute.get('/profile', verifyUserToken, getAdminById, adminProfile);
 adminRoute.put('/profile', verifyUserToken, getAdminById, adminProfilePost);
 
 adminRoute.get('/user-report', verifyUserToken, getAdminById, userReport);
+adminRoute.get(
+  '/operator-report',
+  verifyUserToken,
+  getAdminById,
+  getOperatorReport
+);
+
+adminRoute.get(
+  '/material-report',
+  verifyUserToken,
+  getAdminById,
+  materialReport
+);
+adminRoute.get('/search-report', verifyUserToken, getAdminById, searchReport);
 
 adminRoute.delete('/logout', verifyUserToken, getAdminById, adminLogout);
 

@@ -85,7 +85,7 @@ export const forgetPasswordPost = asyncHandler(async (req, res) => {
   await user.save();
 
   const resetLink = `${
-    config.baseUrl || 'http://localhost:8080'
+    process.env.PROD_BASE_URL || 'http://localhost:8080'
   }/auth/reset-password/${resetToken}`;
 
   const emailContent = forgetPasswordEmail(user, resetLink);

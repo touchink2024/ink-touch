@@ -7,6 +7,7 @@ import {
   userIndex,
   uploadUserImage,
   request,
+  getProductQuantity,
   requestPost,
   allRequest,
   prodReturn,
@@ -38,6 +39,12 @@ userRoute.post(
 );
 
 userRoute.get('/request', verifyUserToken, getUserById, request);
+userRoute.get(
+  '/product-quantity',
+  verifyUserToken,
+  getUserById,
+  getProductQuantity
+);
 userRoute.post('/request', verifyUserToken, getUserById, requestPost);
 userRoute.get(
   '/allRequest',

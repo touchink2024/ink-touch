@@ -215,3 +215,15 @@ form .buttons button,
   cursor: pointer;
   border: solid 1px #ba68c8;
 }
+
+.report {
+  padding: 10px;
+  width: 200px;
+  font-size: 16px;
+}
+.reportbTN {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-left: 10px;
+  cursor: pointer;
+}

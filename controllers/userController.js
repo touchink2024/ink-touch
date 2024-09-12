@@ -96,6 +96,21 @@ export const request = asyncHandler(async (req, res) => {
   res.render('user/request', { user, ref });
 });
 
+export const getProductQuantity = asyncHandler(async (req, res) => {
+  const { category, size } = req.query;
+
+  const product = await Product.findOne({
+    category: category.trim(),
+    size: size.trim(),
+  });
+
+  if (!product) {
+    return res.status(404).json({ error: 'Product not found' });
+  }
+
+  res.json({ remainingQuantity: product.totalQuantity });
+});
+
 export const requestPost = asyncHandler(async (req, res) => {
   const user = req.currentUser;
   const sanitizedBody = sanitizeObject(req.body);

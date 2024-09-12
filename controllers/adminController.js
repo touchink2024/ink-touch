@@ -833,6 +833,11 @@ export const adminProfilePost = asyncHandler(async (req, res) => {
   });
 });
 
+export const userReport = (req, res) => {
+  const user = req.currentUser;
+  res.render('admin/user-report', { user });
+};
+
 export const adminLogout = asyncHandler(async (req, res) => {
   const accessToken = req.cookies.accessToken;
   const logoutRedirectUrl = '/auth/login';

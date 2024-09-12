@@ -12,6 +12,7 @@ import {
   userIndex,
   uploadUserImage,
   request,
+  getProductQuantity,
   requestPost,
   allRequest,
   prodReturn,
@@ -57,6 +58,7 @@ import {
   rejectWaste,
   adminProfile,
   adminProfilePost,
+  userReport,
   adminLogout,
 } from './adminController.js';
 
@@ -74,6 +76,7 @@ export {
   userIndex,
   uploadUserImage,
   request,
+  getProductQuantity,
   requestPost,
   allRequest,
   prodReturn,
@@ -117,5 +120,6 @@ export {
   rejectWaste,
   adminProfile,
   adminProfilePost,
+  userReport,
   adminLogout,
 };

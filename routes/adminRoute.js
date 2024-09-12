@@ -56,6 +56,7 @@ import {
   rejectWaste,
   adminProfile,
   adminProfilePost,
+  userReport,
   adminLogout,
 } from '../controllers/index.js';
 
@@ -205,6 +206,8 @@ adminRoute.get(
 
 adminRoute.get('/profile', verifyUserToken, getAdminById, adminProfile);
 adminRoute.put('/profile', verifyUserToken, getAdminById, adminProfilePost);
+
+adminRoute.get('/user-report', verifyUserToken, getAdminById, userReport);
 
 adminRoute.delete('/logout', verifyUserToken, getAdminById, adminLogout);
 

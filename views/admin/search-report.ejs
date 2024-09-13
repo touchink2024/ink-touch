@@ -61,18 +61,13 @@
 
         <div class="container-fluid pt-4 px-4">
           <div class="bg-light text-center rounded p-4">
-            <div class="container">
-              <header>Operator Report</header>
+            <div class="containereds">
+              <header>Search Report</header>
               <div class="row">
                 <div class="card">
                   <div class="card-body">
                     <div class="tab-content">
-                      <form
-                        class="form-horizontal"
-                        action=""
-                        method="post"
-                        enctype="multipart/form-data"
-                      >
+                      <form id="searchForm" method="POST">
                         <div class="form-group">
                           <div class="row">
                             <label class="col-sm-3 control-label"
@@ -83,6 +78,7 @@
                                 type="date"
                                 class="form-control"
                                 name="fromdate"
+                                required
                               />
                             </div>
                           </div>
@@ -98,6 +94,7 @@
                                 type="date"
                                 class="form-control"
                                 name="todate"
+                                required
                               />
                             </div>
                           </div>
@@ -107,18 +104,14 @@
                           <div
                             class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2"
                           >
-                            <label for="validationCustomUsername"></label>
-                            <div class="input-group">
-                              <div class="input-group-prepend"></div>
-
-                              <button
-                                class="btn btn-primary"
-                                type="submit"
-                                name="search"
-                              >
-                                Search
-                              </button>
-                            </div>
+                            <button
+                              class="btn btn-primary"
+                              type="submit"
+                              name="search"
+                              id="searchBtn"
+                            >
+                              Search
+                            </button>
                           </div>
                         </center>
                       </form>
@@ -135,7 +128,7 @@
         <div class="container-fluid pt-4 px-4">
           <div class="bg-light text-center rounded p-4">
             <div class="container">
-              <header>Operator Report Result</header>
+              <header>Search Report Result</header>
               <div class="row">
                 <div class="col-lg-12">
                   <div class="card">
@@ -146,15 +139,13 @@
                           class="table table-striped table-bordered dt-responsive nowrap"
                           style="width: 100%"
                         >
-                          <h5>SEARCH REPORT</h5>
-
                           <thead>
                             <tr>
                               <th>S/N</th>
                               <th>Action</th>
-                              <th>User</th>
-                              <th>Date of Action</th>
-                              <th>Invoice No</th>
+                              <th>Operator</th>
+                              <th>Date</th>
+                              <th>Ref</th>
                               <th>Category</th>
                               <th>Material</th>
                               <th>QTY</th>
@@ -162,36 +153,12 @@
                               <th>Status</th>
                             </tr>
                           </thead>
-                          <tbody>
-                            <tr>
-                              <td>1</td>
-                              <td>Request</td>
-                              <td>Jamiu Olawole</td>
-                              <td>12-10-2024 6:48pm</td>
-                              <td>INV-1105</td>
-                              <td>FLEX</td>
-                              <td>10 FT</td>
-                              <td>10</td>
-                              <td>For Street Job</td>
-                              <td>APRROVED</td>
-                            </tr>
-                            <tr>
-                              <td>2</td>
-                              <td>Add Stocks</td>
-                              <td>Admin</td>
-                              <td>10-11-2024 1:48pm</td>
-                              <td>-</td>
-                              <td>SAV</td>
-                              <td>4 FT</td>
-                              <td>56</td>
-                              <td>Stock from HMM Ltd.</td>
-                              <td>-</td>
-                            </tr>
-                          </tbody>
-                          <!-- <tbody> -->
-                          <!-- Data will be inserted here via JavaScript -->
-                          <!-- </tbody> -->
+                          <tbody></tbody>
                         </table>
+                        <div
+                          id="pagination"
+                          class="pagination-controls mt-3"
+                        ></div>
                       </div>
                     </div>
                   </div>
@@ -200,7 +167,6 @@
             </div>
           </div>
         </div>
-
         <!-- report result end -->
 
         <!-- Footer Start -->

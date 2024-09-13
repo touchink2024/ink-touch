@@ -175,7 +175,7 @@
                     <td>
                       <button
                         type="button"
-                        class="btn <%= request.request_status === 'Accept' ? 'btn-success' : request.request_status === 'Declined' ? 'btn-danger' : request.request_status === 'Pending' ? 'btn-primary' : 'btn-secondary' %>"
+                        class="btn <%= request.request_status === 'Accepted' ? 'btn-success' : request.request_status === 'Declined' ? 'btn-danger' : request.request_status === 'Pending' ? 'btn-primary' : 'btn-secondary' %>"
                       >
                         <%= (request.request_status ||
                         'Pending').charAt(0).toUpperCase() +

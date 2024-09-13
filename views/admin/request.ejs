@@ -100,7 +100,7 @@
                         <td>
                           <select class="form-select account-status-select" data-request-id="<%= request._id %>">
                             <option value="Pending" <%= request.request_status === 'Pending' ? 'selected' : '' %>>Pending</option>
-                            <option value="Accept" <%= request.request_status === 'Accept' ? 'selected' : '' %>>Accept</option>
+                            <option value="Accepted" <%= request.request_status === 'Accepted' ? 'selected' : '' %>>Accepted</option>
                             <option value="Declined" <%= request.request_status === 'Declined' ? 'selected' : '' %>>Declined</option>
                           </select>
                         </td>

@@ -15,7 +15,7 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
     totalQuantity: {
-      type: Number,
+      type: mongoose.Schema.Types.Decimal128,
       required: true,
     },
   },

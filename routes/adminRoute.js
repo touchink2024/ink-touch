@@ -59,7 +59,9 @@ import {
   userReport,
   getOperatorReport,
   materialReport,
+  getMaterialReport,
   searchReport,
+  getMaterialsByDate,
   adminLogout,
 } from '../controllers/index.js';
 
@@ -224,7 +226,20 @@ adminRoute.get(
   getAdminById,
   materialReport
 );
+adminRoute.get(
+  '/get-material-report',
+  verifyUserToken,
+  getAdminById,
+  getMaterialReport
+);
+
 adminRoute.get('/search-report', verifyUserToken, getAdminById, searchReport);
+adminRoute.post(
+  '/material-search',
+  verifyUserToken,
+  getAdminById,
+  getMaterialsByDate
+);
 
 adminRoute.delete('/logout', verifyUserToken, getAdminById, adminLogout);
 

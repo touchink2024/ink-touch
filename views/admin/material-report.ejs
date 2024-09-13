@@ -62,7 +62,7 @@
         <div class="container-fluid pt-4 px-4">
           <div class="bg-light text-center rounded p-4">
             <div class="container">
-              <header>Operator Report</header>
+              <header>Materials Report</header>
               <div class="row">
                 <div class="card">
                   <div class="card-body">
@@ -75,15 +75,15 @@
                         <div class="form-group">
                           <div class="row">
                             <label class="col-sm-3 control-label"
-                              >Operators</label
+                              >Materials</label
                             >
                             <div class="col-sm-9">
                               <select name="operator" class="form-control">
                                 <option></option>
                                 <option>Available Materials</option>
-                                <option>Materials Used</option>
-                                <option>Materials Wasted</option>
+                                <option>Materials Request</option>
                                 <option>Materials Returned</option>
+                                <option>Materials Wasted</option>
                               </select>
                             </div>
                           </div>
@@ -121,7 +121,7 @@
         <div class="container-fluid pt-4 px-4">
           <div class="bg-light text-center rounded p-4">
             <div class="container">
-              <header>Operator Report Result</header>
+              <header>Materials Report Result</header>
               <div class="row">
                 <div class="col-lg-12">
                   <div class="card">
@@ -148,19 +148,8 @@
                               <th>Relf Flex 10 FT</th>
                             </tr>
                           </thead>
-                          <tbody>
-                            <tr>
-                              <td>45</td>
-                              <td>78</td>
-                              <td>98</td>
-                              <td>74</td>
-                              <td>43</td>
-                              <td>82</td>
-                              <td>56</td>
-                              <td>43</td>
-                              <td>82</td>
-                              <td>56</td>
-                            </tr>
+                          <tbody id="flex-table-body">
+                            <!-- Data will be populated here -->
                           </tbody>
                         </table>
                         <p></p>
@@ -186,18 +175,8 @@
                               <th>Fabric 5 FT</th>
                             </tr>
                           </thead>
-                          <tbody>
-                            <td>45</td>
-                            <td>78</td>
-                            <td>98</td>
-                            <td>74</td>
-                            <td>43</td>
-                            <td>82</td>
-                            <td>56</td>
-                            <td>43</td>
-                            <td>82</td>
-                            <td>56</td>
-                            <td>56</td>
+                          <tbody id="sav-table-body">
+                            <!-- Data will be populated here -->
                           </tbody>
                         </table>
                       </div>

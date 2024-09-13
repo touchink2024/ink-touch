@@ -32,6 +32,13 @@ import {
   wasteUpdateMail,
 } from './emailTemplates.js';
 
+import {
+  getAvailableMaterials,
+  getRequestedMaterials,
+  getWastedMaterials,
+  getReturnedMaterials,
+} from './materialCount.js';
+
 export {
   log,
   sendMail,
@@ -63,4 +70,8 @@ export {
   pendingWasteFilter,
   acceptWasteFilter,
   rejectedWasteFilter,
+  getAvailableMaterials,
+  getRequestedMaterials,
+  getWastedMaterials,
+  getReturnedMaterials,
 };

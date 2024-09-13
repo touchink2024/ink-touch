@@ -20,7 +20,7 @@ const requestProductSchema = new mongoose.Schema(
       required: true,
     },
     quantity_requested: {
-      type: Number,
+      type: mongoose.Schema.Types.Decimal128,
       required: true,
     },
     narration: {

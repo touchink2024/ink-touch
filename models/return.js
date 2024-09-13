@@ -19,7 +19,7 @@ const returnSchema = new mongoose.Schema(
       trim: true,
     },
     return_quantity: {
-      type: Number,
+      type: mongoose.Schema.Types.Decimal128,
       trim: true,
     },
     narration: {

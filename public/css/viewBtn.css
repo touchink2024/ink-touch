@@ -120,5 +120,113 @@ edit popup */
   display: inline-block;
   font-weight: bold;
 }
+.pagination-controls button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: 1px solid #009cff;
+  background-color: #009cff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
-/* blaze */
+.pagination-controls button.disabled {
+  background-color: #e0e0e0;
+  color: #a0a0a0;
+  cursor: not-allowed;
+  border: 1px solid #d0d0d0;
+}
+
+.containereds {
+  position: relative;
+  max-width: 900px;
+  width: 100%;
+  border-radius: 6px;
+  padding: 30px;
+  margin: 0 15px;
+  background-color: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+.containereds header {
+  position: relative;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+.containereds header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 3px;
+  width: 100%;
+  border-radius: 8px;
+  background-color: #4070f4;
+}
+.containereds form {
+  position: relative;
+  margin-top: 16px;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.containereds form .form {
+  position: absolute;
+  background-color: #fff;
+  transition: 0.3 ease;
+}
+.containereds form .form.second {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(100%);
+}
+
+.containereds form .title {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 6px 0;
+  color: #333;
+}
+.contaicontaineredsner form .fields {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.containereds form button,
+.backBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 45px;
+  max-width: 300px;
+  width: 100%;
+  border: none;
+  outline: none;
+  color: #fff;
+  border-radius: 5px;
+  margin: 25px o;
+  background-color: #4070f4;
+  transition: all 0.3s linear;
+  cursor: pointer;
+}
+.containereds form button,
+.containereds form .backBtn {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+@media (max-width: 750px) {
+  .containereds form {
+    overflow-y: scroll;
+  }
+  .containereds form::-webkit-scrollbar {
+    display: none;
+  }
+  form .fields .input-field {
+    width: calc(100% / 2 - 15px);
+  }
+}

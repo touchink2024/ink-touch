@@ -61,7 +61,9 @@ import {
   userReport,
   getOperatorReport,
   materialReport,
+  getMaterialReport,
   searchReport,
+  getMaterialsByDate,
   adminLogout,
 } from './adminController.js';
 
@@ -126,6 +128,8 @@ export {
   userReport,
   getOperatorReport,
   materialReport,
+  getMaterialReport,
   searchReport,
+  getMaterialsByDate,
   adminLogout,
 };

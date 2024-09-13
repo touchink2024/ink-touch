@@ -19,7 +19,7 @@ const wastageSchema = new mongoose.Schema(
       trim: true,
     },
     waste_quantity: {
-      type: Number,
+      type: mongoose.Schema.Types.Decimal128,
       trim: true,
     },
     narration: {

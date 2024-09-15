@@ -13,7 +13,7 @@ export const requestSchema = Joi.object({
   size: Joi.string().trim().required().messages({
     'string.empty': 'Size is required',
   }),
-  quantity_requested: Joi.number().required().messages({
+  quantity_requested: Joi.number().positive().precision(2).required().messages({
     'number.base': 'Quantity must be a number',
     'any.required': 'Quantity is required',
   }),
@@ -35,7 +35,7 @@ export const returnSchema = Joi.object({
   size: Joi.string().trim().required().messages({
     'string.empty': 'Size is required',
   }),
-  return_quantity: Joi.number().required().messages({
+  return_quantity: Joi.number().positive().precision(2).required().messages({
     'number.base': 'Quantity must be a number',
     'any.required': 'Quantity is required',
   }),
@@ -57,7 +57,7 @@ export const wasteSchema = Joi.object({
   size: Joi.string().trim().required().messages({
     'string.empty': 'Size is required',
   }),
-  waste_quantity: Joi.number().required().messages({
+  waste_quantity: Joi.number().positive().precision(2).required().messages({
     'number.base': 'Quantity must be a number',
     'any.required': 'Quantity is required',
   }),

@@ -39,7 +39,7 @@ function showEditProductModal(button) {
                 </select>
               </td>
             </tr>
-            <tr><th>Quantity</th><td><input style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" type="number" id="totalQuantity" name="totalQuantity" value="${
+            <tr><th>Quantity</th><td><input style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" type="number" id="totalQuantity" step="0.1" name="totalQuantity" value="${
               product.totalQuantity || ''
             }"></td></tr>
             <tr><th>Narration</th><td><input style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" type="text" id="narration" name="narration" value="${
@@ -94,23 +94,23 @@ function populateSizes(category, selectedSize = '') {
       '7 ft',
       '8 ft',
       '10 ft',
-      'Blacklit 10 ft',
-      'Mesh 10 ft',
-      'Relf flex 10 ft',
+      'blacklit 10 ft',
+      'mesh 10 ft',
+      'relf flex 10 ft',
     ];
   } else if (category === 'Sav') {
     sizes = [
       '4 ft',
       '5 ft',
-      '4/5 ft',
-      'Relf sav 4/5 ft',
+      '4_5 ft',
+      'relf sav 4_5 ft',
       'pvc',
-      'Clear sticker 4&5 ft',
-      'Paper 3 ft',
-      'Paper 4 ft',
-      'Paper 5 ft',
-      'Fabric 4 ft',
-      'Fabric 5 ft',
+      'clear sticker 4_5 ft',
+      'paper 3 ft',
+      'paper 4 ft',
+      'paper 5 ft',
+      'fabric 4 ft',
+      'fabric 5 ft',
     ];
   }
 

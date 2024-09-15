@@ -116,6 +116,7 @@ export const requestPost = asyncHandler(async (req, res) => {
   const sanitizedBody = sanitizeObject(req.body);
   const { ref, operator, category, size, quantity_requested, narration } =
     sanitizedBody;
+  const qtyRequested = parseFloat(parseFloat(quantity_requested).toFixed(2));
 
   const { error, value } = requestSchema.validate(sanitizedBody, {
     abortEarly: false,
@@ -134,7 +135,7 @@ export const requestPost = asyncHandler(async (req, res) => {
       .status(404)
       .json({ success: false, message: 'Product not found.' });
   }
-  if (product.totalQuantity < quantity_requested) {
+  if (product.totalQuantity < qtyRequested) {
     return res
       .status(400)
       .json({ success: false, message: 'Insufficient product quantity.' });
@@ -145,7 +146,7 @@ export const requestPost = asyncHandler(async (req, res) => {
     operator,
     category,
     size,
-    quantity_requested,
+    quantity_requested: qtyRequested,
     narration,
     userId: user._id,
   });
@@ -190,7 +191,7 @@ export const prodReturnPost = asyncHandler(async (req, res) => {
   const { ref, operator, category, size, return_quantity, narration } =
     sanitizedBody;
 
-  const returnQty = Number(return_quantity);
+  const returnQty = parseFloat(parseFloat(return_quantity).toFixed(2));
 
   const { error, value } = returnSchema.validate(sanitizedBody, {
     abortEarly: false,
@@ -234,7 +235,9 @@ export const prodReturnPost = asyncHandler(async (req, res) => {
   const totalWasteQuantity = totalWasted.length > 0 ? totalWasted[0].total : 0;
 
   // Ensure combined wastage and return quantity does not exceed requested quantity
-  const combinedTotal = totalReturnQuantity + totalWasteQuantity + returnQty;
+  const combinedTotal = parseFloat(
+    (totalReturnQuantity + totalWasteQuantity + returnQty).toFixed(2)
+  );
   if (combinedTotal > quantity_requested) {
     return res.status(400).json({
       success: false,
@@ -300,7 +303,7 @@ export const wastagePost = asyncHandler(async (req, res) => {
   const { ref, operator, category, size, waste_quantity, narration } =
     sanitizedBody;
 
-  const wasteQty = Number(waste_quantity);
+  const wasteQty = parseFloat(parseFloat(waste_quantity).toFixed(2));
 
   const { error, value } = wasteSchema.validate(sanitizedBody, {
     abortEarly: false,
@@ -337,7 +340,9 @@ export const wastagePost = asyncHandler(async (req, res) => {
     totalReturned.length > 0 ? totalReturned[0].total : 0;
   const totalWasteQuantity = totalWasted.length > 0 ? totalWasted[0].total : 0;
 
-  const combinedTotal = totalReturnQuantity + totalWasteQuantity + wasteQty;
+  const combinedTotal = parseFloat(
+    (totalReturnQuantity + totalWasteQuantity + wasteQty).toFixed(2)
+  );
   if (combinedTotal > quantity_requested) {
     return res.status(400).json({
       success: false,

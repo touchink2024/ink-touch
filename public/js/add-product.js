@@ -18,23 +18,23 @@ document.getElementById('category').addEventListener('change', function () {
       '7 ft',
       '8 ft',
       '10 ft',
-      'Blacklit 10 ft',
-      'Mesh 10 ft',
-      'Relf flex 10 ft',
+      'blacklit 10 ft',
+      'mesh 10 ft',
+      'relf flex 10 ft',
     ];
   } else if (selectedCategory === 'Sav') {
     sizes = [
       '4 ft',
       '5 ft',
       '4_5 ft',
-      'Relf sav 4_5 ft',
+      'relf sav 4_5 ft',
       'pvc',
-      'Clear sticker 4_5 ft',
-      'Paper 3 ft',
-      'Paper 4 ft',
-      'Paper 5 ft',
-      'Fabric 4 ft',
-      'Fabric 5 ft',
+      'clear sticker 4_5 ft',
+      'paper 3 ft',
+      'paper 4 ft',
+      'paper 5 ft',
+      'fabric 4 ft',
+      'fabric 5 ft',
     ];
   }
 

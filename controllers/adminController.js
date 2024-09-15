@@ -330,8 +330,9 @@ export const addProductPost = asyncHandler(async (req, res) => {
   });
 
   if (existingProduct) {
-    // If the product exists, update the quantity
-    existingProduct.totalQuantity += totalQuantity;
+    existingProduct.totalQuantity = parseFloat(
+      (existingProduct.totalQuantity + parseFloat(totalQuantity)).toFixed(2)
+    );
     await existingProduct.save();
 
     return res.status(200).json({
@@ -343,7 +344,7 @@ export const addProductPost = asyncHandler(async (req, res) => {
     const newProduct = new Product({
       category,
       size,
-      totalQuantity,
+      totalQuantity: parseFloat(totalQuantity.toFixed(2)),
       narration,
     });
 
@@ -403,7 +404,7 @@ export const editProductPost = asyncHandler(async (req, res) => {
       $set: {
         category,
         size,
-        totalQuantity,
+        totalQuantity: parseFloat(totalQuantity).toFixed(2),
         narration,
       },
     },

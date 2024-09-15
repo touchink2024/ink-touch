@@ -108,7 +108,8 @@ export const getProductQuantity = asyncHandler(async (req, res) => {
     return res.status(404).json({ error: 'Product not found' });
   }
 
-  res.json({ remainingQuantity: product.totalQuantity });
+  const remainingQuantity = parseFloat(product.totalQuantity.toFixed(2));
+  res.json({ remainingQuantity });
 });
 
 export const requestPost = asyncHandler(async (req, res) => {

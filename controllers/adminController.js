@@ -494,13 +494,16 @@ export const requestProductPost = asyncHandler(async (req, res) => {
         .json({ success: false, message: 'Product not found.' });
     }
 
-    if (product.totalQuantity < request.quantity_requested) {
+    const availableQuantity = parseFloat(product.totalQuantity.toFixed(2));
+    const requestedQuantity = parseFloat(request.quantity_requested.toFixed(2));
+
+    if (availableQuantity < requestedQuantity) {
       return res
         .status(400)
         .json({ success: false, message: 'Insufficient product quantity.' });
     }
 
-    product.totalQuantity -= request.quantity_requested;
+    product.totalQuantity = availableQuantity - requestedQuantity;
     await product.save();
 
     request.request_status = 'Accept';
@@ -605,7 +608,12 @@ export const returnProductPost = asyncHandler(async (req, res) => {
         .json({ success: false, message: 'Product not found.' });
     }
 
-    product.totalQuantity += returned.return_quantity;
+    const totalQuantity = parseFloat(product.totalQuantity.toFixed(2));
+    const returnQuantity = parseFloat(returned.return_quantity.toFixed(2));
+
+    product.totalQuantity = parseFloat(
+      (totalQuantity + returnQuantity).toFixed(2)
+    );
     await product.save();
 
     returned.return_status = 'Approved';

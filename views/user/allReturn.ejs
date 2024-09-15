@@ -94,7 +94,7 @@
                     <td>
                       <button
                         type="button"
-                        class="btn <%= returnItem.return_status === 'Accepted' ? 'btn-success' : returnItem.return_status === 'Declined' ? 'btn-danger' : returnItem.return_status === 'Pending' ? 'btn-primary' : 'btn-secondary' %>"
+                        class="btn <%= returnItem.return_status === 'Accept' ? 'btn-success' : returnItem.return_status === 'Declined' ? 'btn-danger' : returnItem.return_status === 'Pending' ? 'btn-primary' : 'btn-secondary' %>"
                       >
                         <%= (returnItem.return_status ||
                         'Pending').charAt(0).toUpperCase() +

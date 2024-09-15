@@ -29,7 +29,7 @@ const requestProductSchema = new mongoose.Schema(
     request_status: {
       type: String,
       trim: true,
-      enum: ['Pending', 'Accepted', 'Declined'],
+      enum: ['Pending', 'Accept', 'Declined'],
       default: 'Pending',
     },
     userId: {

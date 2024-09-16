@@ -186,6 +186,26 @@ export const prodReturn = (req, res) => {
   res.render('user/return', { user });
 };
 
+export const getRefs = asyncHandler(async (req, res) => {
+  const userId = req.currentUser._id;
+  const refs = await RequestProduct.find({ userId }).select('ref');
+  res.json({ refs });
+});
+
+export const getRefDetails = asyncHandler(async (req, res) => {
+  const ref = req.params.refId;
+
+  const refDetails = await RequestProduct.findOne({ ref }).select(
+    'category size'
+  );
+
+  if (!refDetails) {
+    return res.status(404).json({ message: 'Ref not found' });
+  }
+
+  res.json(refDetails);
+});
+
 export const prodReturnPost = asyncHandler(async (req, res) => {
   const user = req.currentUser;
   const sanitizedBody = sanitizeObject(req.body);
@@ -247,10 +267,11 @@ export const prodReturnPost = asyncHandler(async (req, res) => {
   }
 
   const existingReturn = await Return.findOne({ ref });
-  if (existingReturn) {
+  if (existingReturn && existingReturn.return_status === 'Approved') {
     return res.status(409).json({
       success: false,
-      message: 'Return already submitted for this reference number.',
+      message:
+        'Return already submitted and approved for this reference number.',
     });
   }
 
@@ -352,10 +373,11 @@ export const wastagePost = asyncHandler(async (req, res) => {
   }
 
   const existingWaste = await Wastage.findOne({ ref });
-  if (existingWaste) {
+  if (existingWaste && existingWaste.waste_status === 'Approved') {
     return res.status(409).json({
       success: false,
-      message: 'Wastage has already been submitted for this reference number.',
+      message:
+        'Wastage already submitted and approved for this reference number.',
     });
   }
 

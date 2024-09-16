@@ -73,11 +73,12 @@
                     <div class="fields">
                       <div class="input-field">
                         <label>Ref No</label>
-                        <input
-                          type="text"
-                          name="ref"
-                          placeholder="Enter ref number"
-                        />
+                        <select id="ref" name="ref">
+                          <option value="" disabled selected>
+                            Select a ref number
+                          </option>
+                          <!-- Reference numbers will be dynamically populated here -->
+                        </select>
                         <div id="refError" class="text-danger"></div>
                       </div>
 
@@ -94,23 +95,18 @@
 
                       <div class="input-field">
                         <label for="category">Category</label>
-                        <select id="category" name="category">
-                          <option value="" disabled selected>
-                            Select a category
-                          </option>
-                          <option value="Flex">Flex</option>
-                          <option value="Sav">Sav</option>
-                        </select>
+                        <input
+                          type="text"
+                          id="category"
+                          name="category"
+                          readonly
+                        />
                         <div id="categoryError" class="text-danger"></div>
                       </div>
 
                       <div class="input-field">
                         <label for="size">Size</label>
-                        <select id="size" name="size">
-                          <option value="" disabled selected>
-                            Select a size
-                          </option>
-                        </select>
+                        <input type="text" id="size" name="size" readonly />
                         <div id="sizeError" class="text-danger"></div>
                       </div>
 
@@ -169,5 +165,6 @@
 
     <script src="../../js/add-product.js"></script>
     <script src="../../mail/return-submit.js"></script>
+    <script src="../../mail/return-query.js"></script>
   </body>
 </html>

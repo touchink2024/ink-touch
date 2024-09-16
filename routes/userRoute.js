@@ -11,6 +11,8 @@ import {
   requestPost,
   allRequest,
   prodReturn,
+  getRefs,
+  getRefDetails,
   prodReturnPost,
   allReturn,
   wastage,
@@ -62,6 +64,13 @@ userRoute.get(
   getUserById,
   paginatedResults(Return, userRequestFilter),
   allReturn
+);
+userRoute.get('/getRefs', verifyUserToken, getUserById, getRefs);
+userRoute.get(
+  '/getRefDetails/:refId',
+  verifyUserToken,
+  getUserById,
+  getRefDetails
 );
 
 userRoute.get('/wastage', verifyUserToken, getUserById, wastage);

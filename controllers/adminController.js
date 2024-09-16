@@ -938,6 +938,7 @@ export const getMaterialsByDate = asyncHandler(async (req, res) => {
 
   const startDate = new Date(fromdate);
   const endDate = new Date(todate);
+  endDate.setHours(23, 59, 59, 999);
 
   const requestProducts = await RequestProduct.find({
     createdAt: { $gte: startDate, $lte: endDate },

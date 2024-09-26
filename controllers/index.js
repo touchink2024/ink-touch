@@ -1,3 +1,5 @@
+import { indexPage } from './pageController.js';
+
 import {
   signUp,
   signUpPost,
@@ -8,6 +10,7 @@ import {
   login,
   loginPost,
 } from './authController.js';
+
 import {
   userIndex,
   uploadUserImage,
@@ -70,6 +73,7 @@ import {
 } from './adminController.js';
 
 export {
+  indexPage,
   //auth
   signUp,
   signUpPost,

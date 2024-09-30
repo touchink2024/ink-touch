@@ -24,6 +24,13 @@ const productSchema = new mongoose.Schema(
   }
 );
 
+productSchema.pre('save', function (next) {
+  if (this.category) {
+    this.category = this.category.toLowerCase();
+  }
+  next();
+});
+
 const Product = mongoose.model('Product', productSchema);
 
 export { Product };

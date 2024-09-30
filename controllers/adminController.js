@@ -323,11 +323,11 @@ export const addProductPost = asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, errors });
   }
 
-  const { category, size, totalQuantity, narration } = value;
-  const existingProduct = await Product.findOne({
-    category: category,
-    size: size,
-  });
+  const category = value.newCategory || value.category;
+  const size = value.newSize || value.size;
+  const { totalQuantity, narration } = value;
+
+  const existingProduct = await Product.findOne({ category, size });
 
   if (existingProduct) {
     existingProduct.totalQuantity = parseFloat(
@@ -349,7 +349,6 @@ export const addProductPost = asyncHandler(async (req, res) => {
     });
 
     await newProduct.save();
-
     return res.status(200).json({
       redirectUrl: '/admin/all-product',
       success: true,

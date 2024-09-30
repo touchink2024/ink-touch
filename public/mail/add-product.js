@@ -1,4 +1,5 @@
 'use strict';
+
 document.addEventListener('DOMContentLoaded', function () {
   const addProductForm = document.getElementById('addProductForm');
 
@@ -13,14 +14,22 @@ document.addEventListener('DOMContentLoaded', function () {
     submitButton.disabled = true;
 
     try {
-      const formData = new FormData(addProductForm);
-      const formObject = Object.fromEntries(formData.entries());
+      const formData = {
+        category: document.getElementById('category').value,
+        newCategory: document.getElementById('newCategoryInput').value,
+        size: document.getElementById('size').value,
+        newSize: document.getElementById('newSizeInput').value,
+        totalQuantity: document.querySelector('input[name="totalQuantity"]')
+          .value,
+        narration: document.querySelector('input[name="narration"]').value,
+      };
+
       const response = await fetch(addProductUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formObject),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
@@ -52,21 +61,5 @@ document.addEventListener('DOMContentLoaded', function () {
       submitButton.innerHTML = 'Submit';
       submitButton.disabled = false;
     }
-  });
-
-  const inputFields = document.querySelectorAll('input, select');
-  inputFields.forEach((inputField) => {
-    inputField.addEventListener('input', () => {
-      const errorElement = document.getElementById(`${inputField.name}Error`);
-      if (errorElement) {
-        errorElement.innerText = '';
-      }
-
-      const generalErrorElement = document.getElementById('generalError');
-      if (generalErrorElement) {
-        generalErrorElement.style.display = 'none';
-        generalErrorElement.innerText = '';
-      }
-    });
   });
 });

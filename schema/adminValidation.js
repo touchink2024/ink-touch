@@ -29,12 +29,21 @@ export const addUserSchema = Joi.object({
 });
 
 export const productSchema = Joi.object({
-  category: Joi.string().trim().required().messages({
+  category: Joi.string().allow('').trim().optional().messages({
     'string.empty': 'Category is required',
   }),
-  size: Joi.string().trim().required().messages({
+
+  newCategory: Joi.string().allow('').trim().optional().messages({
+    'string.empty': 'Category is required',
+  }),
+  size: Joi.string().allow('').trim().optional().messages({
     'string.empty': 'Size is required',
   }),
+
+  newSize: Joi.string().allow('').trim().optional().messages({
+    'string.empty': 'Size is required',
+  }),
+
   totalQuantity: Joi.number().positive().precision(2).required().messages({
     'number.base': 'Quantity must be a number',
     'any.required': 'Quantity is required',

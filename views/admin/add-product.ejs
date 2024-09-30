@@ -8,7 +8,7 @@
     <meta content="" name="description" />
 
     <!-- Favicon -->
-    <link href="../../img/ink.jpg" rel="icon" />
+    <link href="../img/ink.jpg" rel="icon" />
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -79,8 +79,16 @@
                           </option>
                           <option value="Flex">Flex</option>
                           <option value="Sav">Sav</option>
+                          <option value="new-category">Add New Category</option>
                         </select>
                         <div id="categoryError" class="text-danger"></div>
+                        <input
+                          type="text"
+                          id="newCategoryInput"
+                          name="newCategory"
+                          placeholder="Enter new category"
+                          style="display: none"
+                        />
                       </div>
 
                       <div class="input-field">
@@ -91,6 +99,13 @@
                           </option>
                         </select>
                         <div id="sizeError" class="text-danger"></div>
+                        <input
+                          type="text"
+                          id="newSizeInput"
+                          name="newSize"
+                          placeholder="Enter new size"
+                          style="display: none"
+                        />
                       </div>
 
                       <div class="input-field">

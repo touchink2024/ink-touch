@@ -1,5 +1,4 @@
 'use strict';
-// EDIT Product Modal
 function showEditProductModal(button) {
   const prodId = button.getAttribute('data-product-id');
   fetch(`/admin/editProduct/${prodId}`)
@@ -21,22 +20,31 @@ function showEditProductModal(button) {
             <tr>
               <th>Category</th>
               <td>
-                <select id="category" name="category" style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" onchange="handleCategoryChange()">
-                  <option value="Flex" ${
-                    product.category === 'Flex' ? 'selected' : ''
-                  }>Flex</option>
-                  <option value="Sav" ${
-                    product.category === 'Sav' ? 'selected' : ''
-                  }>Sav</option>
-                </select>
+           ${
+             product.category === 'Flex' || product.category === 'Sav'
+               ? `<select id="category" name="category" style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" onchange="handleCategoryChange()">
+                <option value="Flex" ${
+                  product.category === 'Flex' ? 'selected' : ''
+                }>Flex</option>
+                <option value="Sav" ${
+                  product.category === 'Sav' ? 'selected' : ''
+                }>Sav</option>
+              </select>`
+               : `<input type="text" id="category" name="category" value="${product.category}" style="border:none;width: 100%; padding: 8px; box-sizing: border-box;">`
+           }
+                
               </td>
             </tr>
             <tr>
               <th>Size</th>
               <td>
-                <select id="size" name="size" style="border:none;width: 100%; padding: 8px; box-sizing: border-box;">
-                  <!-- The sizes will be dynamically populated here -->
-                </select>
+                ${
+                  product.category === 'Flex' || product.category === 'Sav'
+                    ? `<select id="size" name="size" style="border:none;width: 100%; padding: 8px; box-sizing: border-box;">
+                <!-- The sizes will be dynamically populated here if it's Flex or Sav -->
+              </select>`
+                    : `<input type="text" id="size" name="size" value="${product.size}" style="border:none;width: 100%; padding: 8px; box-sizing: border-box;">`
+                }
               </td>
             </tr>
             <tr><th>Quantity</th><td><input style="border:none;width: 100%; padding: 8px; box-sizing: border-box;" type="number" id="totalQuantity" step="0.1" name="totalQuantity" value="${
@@ -49,15 +57,13 @@ function showEditProductModal(button) {
           </table>
         `;
 
-        // Inject the form content
         formContent.innerHTML = content;
 
-        // Show the correct modal
         const modal = document.getElementById('editProductModal');
         modal.style.display = 'block';
-
-        // Initially populate the size dropdown based on the product's category and size
-        populateSizes(product.category, product.size);
+        if (product.category === 'Flex' || product.category === 'Sav') {
+          populateSizes(product.category, product.size);
+        }
       } else {
         alert('Product details not found');
       }
@@ -67,20 +73,21 @@ function showEditProductModal(button) {
     });
 }
 
-// Function to handle the change event of the category select element
 function handleCategoryChange() {
   const categorySelect = document.getElementById('category');
   const selectedCategory = categorySelect.value;
 
-  // Populate the sizes based on the selected category
-  populateSizes(selectedCategory);
+  if (selectedCategory === 'Flex' || selectedCategory === 'Sav') {
+    populateSizes(selectedCategory);
+  } else {
+    document.getElementById('size').innerHTML =
+      '<option value="" disabled>Select a size</option>';
+  }
 }
 
-// Populate size options based on the selected category
 function populateSizes(category, selectedSize = '') {
   const sizeSelect = document.getElementById('size');
 
-  // Clear the existing options
   sizeSelect.innerHTML = '<option value="" disabled>Select a size</option>';
 
   let sizes = [];
@@ -114,7 +121,6 @@ function populateSizes(category, selectedSize = '') {
     ];
   }
 
-  // Add the sizes to the select dropdown and pre-select the existing size if any
   sizes.forEach(function (size) {
     const option = document.createElement('option');
     option.value = size.toLowerCase();
@@ -128,13 +134,11 @@ function populateSizes(category, selectedSize = '') {
   });
 }
 
-// Close the edit modal
 function closeEditProductModal() {
   const modal = document.getElementById('editProductModal');
   modal.style.display = 'none';
 }
 
-// Submit form
 document
   .getElementById('editProductForm')
   .addEventListener('submit', async function (event) {
@@ -168,7 +172,6 @@ document
     }
   });
 
-// DELETE User MODAL
 function showDeleteProductModal(button) {
   const prodId = button.getAttribute('data-product-id');
   console.log('Product ID:', prodId);

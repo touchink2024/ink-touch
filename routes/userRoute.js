@@ -1,27 +1,9 @@
 import { Router } from 'express';
+import * as userController from '../controllers/index.js';
 import { userImage } from '../configs/index.js';
 import { verifyUserToken, getUserById } from '../middlewares/index.js';
 import { paginatedResults, userRequestFilter } from '../utils/index.js';
 import { Wastage, RequestProduct, Return } from '../models/index.js';
-import {
-  userIndex,
-  uploadUserImage,
-  request,
-  getProductQuantity,
-  requestPost,
-  allRequest,
-  prodReturn,
-  getRefs,
-  getRefDetails,
-  prodReturnPost,
-  allReturn,
-  wastage,
-  allWastage,
-  wastagePost,
-  profile,
-  profilePost,
-  userLogout,
-} from '../controllers/index.js';
 
 const userRoute = Router();
 
@@ -30,61 +12,99 @@ userRoute.get(
   verifyUserToken,
   getUserById,
   paginatedResults(RequestProduct, userRequestFilter),
-  userIndex
+  userController.userIndex
 );
 userRoute.post(
   '/uploadUserImage',
   verifyUserToken,
   getUserById,
   userImage.single('image'),
-  uploadUserImage
+  userController.uploadUserImage
 );
 
-userRoute.get('/request', verifyUserToken, getUserById, request);
+userRoute.get('/request', verifyUserToken, getUserById, userController.request);
 userRoute.get(
   '/product-quantity',
   verifyUserToken,
   getUserById,
-  getProductQuantity
+  userController.getProductQuantity
 );
-userRoute.post('/request', verifyUserToken, getUserById, requestPost);
+userRoute.post(
+  '/request',
+  verifyUserToken,
+  getUserById,
+  userController.requestPost
+);
 userRoute.get(
   '/allRequest',
   verifyUserToken,
   getUserById,
   paginatedResults(RequestProduct, userRequestFilter),
-  allRequest
+  userController.allRequest
 );
 
-userRoute.get('/return', verifyUserToken, getUserById, prodReturn);
-userRoute.post('/return', verifyUserToken, getUserById, prodReturnPost);
+userRoute.get(
+  '/return',
+  verifyUserToken,
+  getUserById,
+  userController.prodReturn
+);
+userRoute.post(
+  '/return',
+  verifyUserToken,
+  getUserById,
+  userController.prodReturnPost
+);
 userRoute.get(
   '/allReturn',
   verifyUserToken,
   getUserById,
   paginatedResults(Return, userRequestFilter),
-  allReturn
+  userController.allReturn
 );
-userRoute.get('/getRefs', verifyUserToken, getUserById, getRefs);
+userRoute.get('/getRefs', verifyUserToken, getUserById, userController.getRefs);
 userRoute.get(
   '/getRefDetails/:refId',
   verifyUserToken,
   getUserById,
-  getRefDetails
+  userController.getRefDetails
 );
 
-userRoute.get('/wastage', verifyUserToken, getUserById, wastage);
+userRoute.get('/wastage', verifyUserToken, getUserById, userController.wastage);
 userRoute.get(
   '/allWastage',
   verifyUserToken,
   getUserById,
   paginatedResults(Wastage, userRequestFilter),
-  allWastage
+  userController.allWastage
 );
-userRoute.post('/wastage', verifyUserToken, getUserById, wastagePost);
+userRoute.post(
+  '/wastage',
+  verifyUserToken,
+  getUserById,
+  userController.wastagePost
+);
 
-userRoute.get('/profile', verifyUserToken, getUserById, profile);
-userRoute.put('/profile', verifyUserToken, getUserById, profilePost);
-userRoute.delete('/logout', verifyUserToken, getUserById, userLogout);
+userRoute.get('/profile', verifyUserToken, getUserById, userController.profile);
+userRoute.put(
+  '/profile',
+  verifyUserToken,
+  getUserById,
+  userController.profilePost
+);
+
+userRoute.get(
+  '/message',
+  verifyUserToken,
+  getUserById,
+  userController.getUserMessages
+);
+
+userRoute.delete(
+  '/logout',
+  verifyUserToken,
+  getUserById,
+  userController.userLogout
+);
 
 export { userRoute };

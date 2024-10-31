@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import * as adminCOntroller from '../controllers/index.js';
 import { adminImage } from '../configs/index.js';
 import {
   User,
@@ -24,46 +25,6 @@ import {
   getAdminById,
   checkRole,
 } from '../middlewares/index.js';
-import {
-  adminIndex,
-  uploadAdminImage,
-  allUser,
-  addUser,
-  addUserPost,
-  updateAccountStatus,
-  verifyAccount,
-  viewUser,
-  editUser,
-  editUserPost,
-  deleteUser,
-  allProduct,
-  addProduct,
-  addProductPost,
-  editProduct,
-  editProductPost,
-  deleteProduct,
-  requestProduct,
-  requestProductPost,
-  acceptRequest,
-  rejectRequest,
-  returnProduct,
-  returnProductPost,
-  acceptReturnProduct,
-  rejectReturnProduct,
-  allWastages,
-  allWastagesPost,
-  acceptWaste,
-  rejectWaste,
-  adminProfile,
-  adminProfilePost,
-  userReport,
-  getOperatorReport,
-  materialReport,
-  getMaterialReport,
-  searchReport,
-  getMaterialsByDate,
-  adminLogout,
-} from '../controllers/index.js';
 
 const adminRoute = Router();
 
@@ -72,7 +33,7 @@ adminRoute.get(
   paginatedResults(RequestProduct),
   verifyUserToken,
   getAdminById,
-  adminIndex
+  adminCOntroller.adminIndex
 );
 
 adminRoute.post(
@@ -80,7 +41,7 @@ adminRoute.post(
   verifyUserToken,
   getAdminById,
   adminImage.single('image'),
-  uploadAdminImage
+  adminCOntroller.uploadAdminImage
 );
 
 adminRoute.get(
@@ -88,33 +49,58 @@ adminRoute.get(
   paginatedResults(User),
   verifyUserToken,
   getAdminById,
-  allUser
+  adminCOntroller.allUser
 );
-adminRoute.get('/add-user', verifyUserToken, getAdminById, addUser);
-adminRoute.post('/add-user', verifyUserToken, getAdminById, addUserPost);
+adminRoute.get(
+  '/add-user',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.addUser
+);
+adminRoute.post(
+  '/add-user',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.addUserPost
+);
 adminRoute.post(
   '/updateAccountStatus',
   verifyUserToken,
   getAdminById,
-  updateAccountStatus
+  adminCOntroller.updateAccountStatus
 );
-adminRoute.post('/verifyAccount', verifyUserToken, getAdminById, verifyAccount);
+adminRoute.post(
+  '/verifyAccount',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.verifyAccount
+);
 
-adminRoute.get('/user/:userId', verifyUserToken, getAdminById, viewUser);
-adminRoute.get('/editUser/:userId', verifyUserToken, getAdminById, editUser);
+adminRoute.get(
+  '/user/:userId',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.viewUser
+);
+adminRoute.get(
+  '/editUser/:userId',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.editUser
+);
 adminRoute.put(
   '/editUser/:userId',
   verifyUserToken,
   getAdminById,
   checkRole(['Super_Admin']),
-  editUserPost
+  adminCOntroller.editUserPost
 );
 adminRoute.delete(
   '/user/:userId',
   verifyUserToken,
   getAdminById,
   checkRole(['Super_Admin']),
-  deleteUser
+  adminCOntroller.deleteUser
 );
 
 adminRoute.get(
@@ -122,40 +108,65 @@ adminRoute.get(
   paginatedResults(Product),
   verifyUserToken,
   getAdminById,
-  allProduct
+  adminCOntroller.allProduct
 );
-adminRoute.get('/add-product', verifyUserToken, getAdminById, addProduct);
-adminRoute.post('/add-product', verifyUserToken, getAdminById, addProductPost);
-adminRoute.get('/editProduct/:Id', verifyUserToken, getAdminById, editProduct);
+adminRoute.get(
+  '/add-product',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.addProduct
+);
+adminRoute.post(
+  '/add-product',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.addProductPost
+);
+adminRoute.get(
+  '/editProduct/:Id',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.editProduct
+);
 adminRoute.put(
   '/editProduct/:Id',
   verifyUserToken,
   getAdminById,
-  editProductPost
+  adminCOntroller.editProductPost
 );
-adminRoute.delete('/product/:Id', verifyUserToken, getAdminById, deleteProduct);
+adminRoute.delete(
+  '/product/:Id',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.deleteProduct
+);
 
 adminRoute.get(
   '/request',
   paginatedResults(RequestProduct, pendingRequestFilter),
   verifyUserToken,
   getAdminById,
-  requestProduct
+  adminCOntroller.requestProduct
 );
-adminRoute.post('/request', verifyUserToken, getAdminById, requestProductPost);
+adminRoute.post(
+  '/request',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.requestProductPost
+);
 adminRoute.get(
   '/accept-request',
   paginatedResults(RequestProduct, acceptRequestFilter),
   verifyUserToken,
   getAdminById,
-  acceptRequest
+  adminCOntroller.acceptRequest
 );
 adminRoute.get(
   '/reject-request',
   paginatedResults(RequestProduct, rejectedRequestFilter),
   verifyUserToken,
   getAdminById,
-  rejectRequest
+  adminCOntroller.rejectRequest
 );
 
 adminRoute.get(
@@ -163,27 +174,27 @@ adminRoute.get(
   paginatedResults(Return, pendingReturnFilter),
   verifyUserToken,
   getAdminById,
-  returnProduct
+  adminCOntroller.returnProduct
 );
 adminRoute.post(
   '/all-return',
   verifyUserToken,
   getAdminById,
-  returnProductPost
+  adminCOntroller.returnProductPost
 );
 adminRoute.get(
   '/accept-return',
   paginatedResults(Return, acceptReturnFilter),
   verifyUserToken,
   getAdminById,
-  acceptReturnProduct
+  adminCOntroller.acceptReturnProduct
 );
 adminRoute.get(
   '/reject-return',
   paginatedResults(Return, rejectedReturnFilter),
   verifyUserToken,
   getAdminById,
-  rejectReturnProduct
+  adminCOntroller.rejectReturnProduct
 );
 
 adminRoute.get(
@@ -191,56 +202,107 @@ adminRoute.get(
   paginatedResults(Wastage, pendingWasteFilter),
   verifyUserToken,
   getAdminById,
-  allWastages
+  adminCOntroller.allWastages
 );
-adminRoute.post('/all-wastage', verifyUserToken, getAdminById, allWastagesPost);
+adminRoute.post(
+  '/all-wastage',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.allWastagesPost
+);
 adminRoute.get(
   '/accept-wastage',
   paginatedResults(Wastage, acceptWasteFilter),
   verifyUserToken,
   getAdminById,
-  acceptWaste
+  adminCOntroller.acceptWaste
 );
 adminRoute.get(
   '/reject-wastage',
   paginatedResults(Wastage, rejectedWasteFilter),
   verifyUserToken,
   getAdminById,
-  rejectWaste
+  adminCOntroller.rejectWaste
 );
 
-adminRoute.get('/profile', verifyUserToken, getAdminById, adminProfile);
-adminRoute.put('/profile', verifyUserToken, getAdminById, adminProfilePost);
+adminRoute.get(
+  '/profile',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.adminProfile
+);
+adminRoute.put(
+  '/profile',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.adminProfilePost
+);
 
-adminRoute.get('/user-report', verifyUserToken, getAdminById, userReport);
+adminRoute.get(
+  '/user-report',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.userReport
+);
 adminRoute.get(
   '/operator-report',
   verifyUserToken,
   getAdminById,
-  getOperatorReport
+  adminCOntroller.getOperatorReport
 );
 
 adminRoute.get(
   '/material-report',
   verifyUserToken,
   getAdminById,
-  materialReport
+  adminCOntroller.materialReport
 );
 adminRoute.get(
   '/get-material-report',
   verifyUserToken,
   getAdminById,
-  getMaterialReport
+  adminCOntroller.getMaterialReport
 );
 
-adminRoute.get('/search-report', verifyUserToken, getAdminById, searchReport);
+adminRoute.get(
+  '/search-report',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.searchReport
+);
 adminRoute.post(
   '/material-search',
   verifyUserToken,
   getAdminById,
-  getMaterialsByDate
+  adminCOntroller.getMaterialsByDate
 );
 
-adminRoute.delete('/logout', verifyUserToken, getAdminById, adminLogout);
+adminRoute.get(
+  '/message',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.adminMessage
+);
+
+adminRoute.get(
+  '/message/:userId',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.getMessagesForUser
+);
+
+adminRoute.post(
+  '/message',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.sendMessageToUser
+);
+
+adminRoute.delete(
+  '/logout',
+  verifyUserToken,
+  getAdminById,
+  adminCOntroller.adminLogout
+);
 
 export { adminRoute };

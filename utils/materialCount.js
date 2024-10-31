@@ -1,5 +1,14 @@
 'use strict';
-import { Product, RequestProduct, Wastage, Return } from '../models/index.js';
+
+import cron from 'node-cron';
+import { sendMail, requestReminderMail } from '../utils/index.js';
+import {
+  User,
+  Product,
+  RequestProduct,
+  Wastage,
+  Return,
+} from '../models/index.js';
 
 async function getMaterialCounts(model, category, quantityField) {
   const data = await model.aggregate([
@@ -31,3 +40,29 @@ export async function getWastedMaterials(category) {
 export async function getReturnedMaterials(category) {
   return getMaterialCounts(Return, category, 'return_quantity');
 }
+
+// Check every minute for expired requests
+cron.schedule('* * * * *', async () => {
+  const now = new Date();
+
+  const expiredRequests = await RequestProduct.find({
+    request_status: 'Accept',
+    expiryTime: { $lte: now },
+  });
+
+  for (const request of expiredRequests) {
+    const user = await User.findById(request.userId);
+    if (user) {
+      const emailContent = requestReminderMail(
+        request.adminEmail,
+        user,
+        request
+      );
+      await sendMail(emailContent);
+
+      console.log(`Sent reminder to admin for request ${request._id}`);
+
+      await request.save();
+    }
+  }
+});

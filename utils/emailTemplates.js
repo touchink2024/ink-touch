@@ -227,3 +227,15 @@ export const wasteUpdateMail = (user, waste, waste_status) => ({
 
     <p>Best regards,<br>Ink Touch CEO,</p>`,
 });
+
+export const requestReminderMail = (adminEmail, user, request) => ({
+  from: config.nodemailerEmail,
+  to: adminEmail,
+  subject: 'Reminder: Follow up with user on product request',
+  html: `
+
+      <p>Dear Admin,</p>
+      <p>The request for the product <strong>${request.category} - ${request.size}</strong> made by <strong>${user.name}</strong> is now past its expected return time.</p>
+      <p>Please reach out to the user for an update on the request status.</p>
+      <p>Best regards,<br>Ink Touch CEO,</p>`,
+});

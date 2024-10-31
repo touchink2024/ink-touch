@@ -1,15 +1,21 @@
 'use strict';
 import { cloudinary } from '../configs/index.js';
-import { Conflict, HttpError } from '../middlewares/index.js';
 import { sendMail } from '../utils/index.js';
 import { asyncHandler } from '../helper/index.js';
 import bcrypt from 'bcryptjs';
+import {
+  Conflict,
+  HttpError,
+  ResourceNotFound,
+  BadRequest,
+} from '../middlewares/index.js';
 import {
   User,
   Product,
   RequestProduct,
   Wastage,
   Return,
+  Message,
 } from '../models/index.js';
 import {
   productSchema,
@@ -471,14 +477,12 @@ export const requestProductPost = asyncHandler(async (req, res) => {
 
   const request = await RequestProduct.findById(requestId);
   if (!request) {
-    return res
-      .status(404)
-      .json({ success: false, message: 'Request not found.' });
+    throw new ResourceNotFound('Request not found.');
   }
 
   const user = await User.findById(request.userId);
   if (!user) {
-    return res.status(404).json({ success: false, message: 'User not found.' });
+    throw new ResourceNotFound('User not found.');
   }
 
   if (request_status === 'Accept') {
@@ -488,24 +492,22 @@ export const requestProductPost = asyncHandler(async (req, res) => {
     });
 
     if (!product) {
-      return res
-        .status(404)
-        .json({ success: false, message: 'Product not found.' });
+      throw new ResourceNotFound('Product not found.');
     }
 
     const availableQuantity = parseFloat(product.totalQuantity.toFixed(2));
     const requestedQuantity = parseFloat(request.quantity_requested.toFixed(2));
 
     if (availableQuantity < requestedQuantity) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'Insufficient product quantity.' });
+      throw new BadRequest('Insufficient product quantity.');
     }
 
     product.totalQuantity = availableQuantity - requestedQuantity;
     await product.save();
 
     request.request_status = 'Accept';
+    request.expiryTime = new Date(Date.now() + 60 * 60 * 1000);
+    request.adminEmail = req.currentUser.email;
     await request.save();
   } else if (request_status === 'Declined') {
     request.request_status = 'Declined';
@@ -974,6 +976,44 @@ export const getMaterialsByDate = asyncHandler(async (req, res) => {
     totalPages,
     totalItems,
   });
+});
+
+export const adminMessage = asyncHandler(async (req, res) => {
+  const user = req.currentUser;
+  const existingUsers = await User.find();
+  res.render('admin/message', { user, existingUsers });
+});
+
+export const getMessagesForUser = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const messages = await Message.find({
+      $or: [
+        { sender: req.currentUser._id, recipient: userId },
+        { sender: userId, recipient: req.currentUser._id },
+      ],
+    }).sort({ createdAt: 1 });
+
+    res.status(200).json({ success: true, messages });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: 'Failed to fetch messages', error });
+  }
+});
+
+export const sendMessageToUser = asyncHandler(async (req, res) => {
+  const { userId, content } = req.body;
+
+  const message = new Message({
+    sender: req.currentUser._id, // Admin's ID
+    recipient: userId,
+    content,
+  });
+
+  await message.save();
+  res.status(201).json({ success: true, message: 'Message sent successfully' });
 });
 
 export const adminLogout = asyncHandler(async (req, res) => {

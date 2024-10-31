@@ -8,6 +8,7 @@ import {
   Product,
   Wastage,
   Return,
+  Message,
 } from '../models/index.js';
 import {
   requestSchema,
@@ -494,6 +495,14 @@ export const profilePost = asyncHandler(async (req, res) => {
     success: true,
     message: 'Profile updated successfully.',
   });
+});
+
+export const getUserMessages = asyncHandler(async (req, res) => {
+  const messages = await Message.find({ recipient: req.currentUser._id })
+    .populate('sender', 'name')
+    .sort({ createdAt: -1 });
+
+  res.status(200).json({ success: true, messages });
 });
 
 export const userLogout = asyncHandler(async (req, res) => {

@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { indexPage } from '../controllers/index.js';
+
+import * as pageController from '../controllers/index.js';
 
 const pageRoute = Router();
 
-pageRoute.get('/', indexPage);
+pageRoute.get('/', pageController.indexPage);
 
 export { pageRoute };

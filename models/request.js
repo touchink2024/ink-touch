@@ -37,6 +37,12 @@ const requestProductSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    expiryTime: {
+      type: Date,
+    },
+    adminEmail: {
+      type: String,
+    },
   },
   {
     timestamps: true,

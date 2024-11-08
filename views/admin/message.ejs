@@ -66,54 +66,55 @@
               <div class="card">
                 <div class="row g-0">
                   <div
-                    class="col-12 col-lg-5 col-xl-3 border-right"
-                    style="height: 530px; overflow-y: scroll"
-                  >
-                    <!-- User list -->
-                    <div
-                      id="user-list"
-                      class="list-group"
-                      style="cursor: pointer"
+                  class="col-12 col-lg-5 col-xl-3 border-right"
+                  style="height: 530px; overflow-y: scroll; float: left;"
+                >
+                  <!-- User list -->
+                  <div id="user-list" class="list-group" style="cursor: pointer">
+                    <% existingUsers.forEach((user) => { %>
+                    <a
+                      href="#"
+                      class="list-group-item list-group-item-action d-flex align-items-center"
+                      onclick="selectUser('<%= user._id %>', '<%= user.name %>')"
                     >
-                      <% existingUsers.forEach((user) => { %>
-                      <a
-                        href="#"
-                        class="list-group-item list-group-item-action"
-                        onclick="selectUser('<%= user._id %>', '<%= user.name %>')"
-                      >
-                        <!-- Display user image if available -->
-                        <% if (user && user.image && user.image.imageUrl) { %>
-                        <img
-                          src="<%= user.image.imageUrl %>"
-                          alt="<%= user.name %>"
-                          class="user-image"
-                          style="
-                            width: 50px;
-                            height: 50px;
-                            border-radius: 50%;
-                            margin-right: 10px;
-                          "
-                        />
-                        <% } else { %>
-                        <!-- Fallback image if user has no image -->
-                        <img
-                          src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                          alt="<%= user.name %>"
-                          class="user-image"
-                          style="
-                            width: 50px;
-                            height: 50px;
-                            border-radius: 50%;
-                            margin-right: 10px;
-                          "
-                        />
-                        <% } %> <%= user.name %>
-                      </a>
-                      <% }) %>
-                    </div>
-
-                    <hr class="d-block d-lg-none mt-1 mb-0" />
+                      <!-- Display user image if available -->
+                      <% if (user && user.image && user.image.imageUrl) { %>
+                      <img
+                        src="<%= user.image.imageUrl %>"
+                        alt="<%= user.name %>"
+                        class="user-image"
+                        style="
+                          width: 50px;
+                          height: 50px;
+                          border-radius: 50%;
+                          margin-right: 10px;
+                          flex-shrink: 0;
+                        "
+                      />
+                      <% } else { %>
+                      <!-- Fallback image if user has no image -->
+                      <img
+                        src="https://bootdey.com/img/Content/avatar/avatar5.png"
+                        alt="<%= user.name %>"
+                        class="user-image"
+                        style="
+                          width: 50px;
+                          height: 50px;
+                          border-radius: 50%;
+                          margin-right: 10px;
+                          flex-shrink: 0;
+                        "
+                      />
+                      <% } %> 
+                      <!-- Username -->
+                      <span style="flex-grow: 1;"><%= user.name %></span>
+                    </a>
+                    <% }) %>
                   </div>
+                
+                  <hr class="d-block d-lg-none mt-1 mb-0" />
+                </div>
+                
 
                   <div class="col-12 col-lg-7 col-xl-9">
                     <div class="position-relative">
@@ -154,20 +155,10 @@
                         </div>
                         <div class="col-12 mt-2">
                           <div class="input-group">
-                            <label
-                              for="admin-image-upload"
-                              class="btn btn-primary mr-2"
-                            >
-                              <i class="fas fa-camera"></i> Upload Image
-                            </label>
-                            <input
-                              type="file"
-                              id="admin-image-upload"
-                              class="d-none"
-                            />
                             <button
                               class="btn btn-primary"
                               onclick="sendAdminMessage()"
+                              style="width: 30%;"
                             >
                               Send
                             </button>
@@ -190,6 +181,8 @@
       </div>
       <!-- Content End -->
       <script>
+        const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:8080/' : 'https://ink-touch.onrender.com/';
+
      let selectedUserId = null;
 
 function selectUser(userId, userName) {
@@ -204,12 +197,12 @@ function selectUser(userId, userName) {
 
 async function fetchMessages(userId) {
   try {
-    const response = await fetch(`/admin/message/${userId}`);
+    const response = await fetch(`${baseUrl}admin/message/${userId}`);
     const data = await response.json();
 
     if (data.success) {
       const messagesContainer = document.getElementById('admin-chat-messages');
-      messagesContainer.innerHTML = ''; // Clear previous messages, but leave the username header alone
+      messagesContainer.innerHTML = ''; 
 
       data.messages.forEach((message) => {
         const messageDiv = document.createElement('div');
@@ -246,7 +239,7 @@ async function sendAdminMessage() {
   }
 
   try {
-    const response = await fetch('/admin/message', {
+    const response = await fetch(`${baseUrl}admin/message`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

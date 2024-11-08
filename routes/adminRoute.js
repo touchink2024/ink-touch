@@ -239,32 +239,6 @@ adminRoute.put(
 );
 
 adminRoute.get(
-  '/user-report',
-  verifyUserToken,
-  getAdminById,
-  adminCOntroller.userReport
-);
-adminRoute.get(
-  '/operator-report',
-  verifyUserToken,
-  getAdminById,
-  adminCOntroller.getOperatorReport
-);
-
-adminRoute.get(
-  '/material-report',
-  verifyUserToken,
-  getAdminById,
-  adminCOntroller.materialReport
-);
-adminRoute.get(
-  '/get-material-report',
-  verifyUserToken,
-  getAdminById,
-  adminCOntroller.getMaterialReport
-);
-
-adminRoute.get(
   '/search-report',
   verifyUserToken,
   getAdminById,
@@ -274,7 +248,7 @@ adminRoute.post(
   '/material-search',
   verifyUserToken,
   getAdminById,
-  adminCOntroller.getMaterialsByDate
+  adminCOntroller.getConsolidatedMaterialReport
 );
 
 adminRoute.get(

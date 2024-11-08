@@ -498,11 +498,57 @@ export const profilePost = asyncHandler(async (req, res) => {
 });
 
 export const getUserMessages = asyncHandler(async (req, res) => {
-  const messages = await Message.find({ recipient: req.currentUser._id })
-    .populate('sender', 'name')
+  const userId = req.currentUser._id;
+  const lastFetchedTime = req.query.lastFetchedTime;
+
+  let query = { recipient: userId };
+  if (lastFetchedTime) {
+    query.createdAt = { $gt: new Date(lastFetchedTime) };
+  }
+
+  const messages = await Message.find(query)
+    .populate({
+      path: 'sender',
+      select: 'name _id image',
+      model: 'User',
+    })
     .sort({ createdAt: -1 });
 
-  res.status(200).json({ success: true, messages });
+  const formattedMessages = messages.map((message) => {
+    console.log('Sender:', message.sender);
+    return {
+      content: message.content,
+      senderId: message.sender ? message.sender._id : null,
+      createdAt: message.createdAt,
+      name: message.sender ? message.sender.name : null,
+      adminImage:
+        message.sender && message.sender.image && message.sender.image.imageUrl
+          ? message.sender.image.imageUrl
+          : null,
+    };
+  });
+
+  res.status(200).json({ success: true, messages: formattedMessages });
+});
+
+export const replyToMessage = asyncHandler(async (req, res) => {
+  const { content, recipientId } = req.body;
+
+  if (!content || !recipientId) {
+    return res
+      .status(400)
+      .json({ success: false, message: 'Missing content or recipientId' });
+  }
+
+  const message = new Message({
+    sender: req.currentUser._id,
+    recipient: recipientId,
+    content,
+  });
+
+  await message.save();
+
+  res.status(201).json({ success: true, message: 'Reply sent successfully' });
 });
 
 export const userLogout = asyncHandler(async (req, res) => {

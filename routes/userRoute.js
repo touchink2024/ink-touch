@@ -94,10 +94,17 @@ userRoute.put(
 );
 
 userRoute.get(
-  '/message',
+  '/messages',
   verifyUserToken,
   getUserById,
   userController.getUserMessages
+);
+
+userRoute.post(
+  '/reply',
+  verifyUserToken,
+  getUserById,
+  userController.replyToMessage
 );
 
 userRoute.delete(

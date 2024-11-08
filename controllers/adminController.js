@@ -28,6 +28,7 @@ import {
   approveEmail,
   accountStatusMail,
   requestUpdateMail,
+  requestReminderMail,
   wasteUpdateMail,
   updateProfile,
   returnUpdateMail,
@@ -508,6 +509,16 @@ export const requestProductPost = asyncHandler(async (req, res) => {
     request.request_status = 'Accept';
     request.expiryTime = new Date(Date.now() + 60 * 60 * 1000);
     request.adminEmail = req.currentUser.email;
+
+    // Schedule a delayed email to be sent to the admin after 1 hour
+    setTimeout(async () => {
+      const emailContent = await requestReminderMail(
+        request.adminEmail,
+        user,
+        request
+      );
+      await sendMail(emailContent);
+    }, 60 * 60 * 1000); // 1 hour delay
     await request.save();
   } else if (request_status === 'Declined') {
     request.request_status = 'Declined';
@@ -847,80 +858,6 @@ export const adminProfilePost = asyncHandler(async (req, res) => {
   });
 });
 
-export const userReport = asyncHandler(async (req, res) => {
-  const user = req.currentUser;
-  const users = await User.find({}, 'name');
-  if (!users || users.length === 0) {
-    return res
-      .status(404)
-      .json({ success: false, message: 'Users not found.' });
-  }
-
-  res.render('admin/user-report', { user, users });
-});
-
-export const getOperatorReport = asyncHandler(async (req, res) => {
-  const { operator, event } = req.query;
-  const page = parseInt(req.query.page) || 1;
-  const perPage = 6; // Number of items per page
-
-  let reportData;
-  const filter = { operator };
-
-  if (event === 'Requests') {
-    reportData = await RequestProduct.find(filter);
-  } else if (event === 'Wastages') {
-    reportData = await Wastage.find(filter);
-  } else if (event === 'Returns') {
-    reportData = await Return.find(filter);
-  }
-
-  if (!reportData || reportData.length === 0) {
-    return res.status(404).json({ error: 'No data found' });
-  }
-
-  const totalItems = reportData.length;
-  const totalPages = Math.ceil(totalItems / perPage);
-  const paginatedData = reportData.slice((page - 1) * perPage, page * perPage);
-
-  res.json({
-    results: paginatedData,
-    currentPage: page,
-    totalPages,
-    totalItems,
-  });
-});
-
-export const materialReport = asyncHandler(async (req, res) => {
-  const user = req.currentUser;
-  res.render('admin/material-report', { user });
-});
-
-export const getMaterialReport = asyncHandler(async (req, res) => {
-  const { type, category } = req.query;
-
-  let reportData = {
-    Flex: {},
-    SAV: {},
-  };
-
-  if (type === 'Available Materials') {
-    reportData.Flex = await getAvailableMaterials('Flex');
-    reportData.SAV = await getAvailableMaterials('Sav');
-  } else if (type === 'Materials Wasted') {
-    reportData.Flex = await getWastedMaterials('Flex');
-    reportData.SAV = await getWastedMaterials('Sav');
-  } else if (type === 'Materials Request') {
-    reportData.Flex = await getRequestedMaterials('Flex');
-    reportData.SAV = await getRequestedMaterials('Sav');
-  } else if (type === 'Materials Returned') {
-    reportData.Flex = await getReturnedMaterials('Flex');
-    reportData.SAV = await getReturnedMaterials('Sav');
-  }
-  console.log('Report Data:', reportData);
-  res.json(reportData);
-});
-
 export const searchReport = asyncHandler(async (req, res) => {
   const user = req.currentUser;
   const users = await User.find({}, 'name');
@@ -932,10 +869,10 @@ export const searchReport = asyncHandler(async (req, res) => {
   res.render('admin/search-report', { user, users });
 });
 
-export const getMaterialsByDate = asyncHandler(async (req, res) => {
+export const getConsolidatedMaterialReport = asyncHandler(async (req, res) => {
   const { fromdate, todate } = req.body;
   const page = parseInt(req.query.page) || 1;
-  const perPage = 6;
+  const perPage = 10;
 
   const startDate = new Date(fromdate);
   const endDate = new Date(todate);
@@ -987,27 +924,21 @@ export const adminMessage = asyncHandler(async (req, res) => {
 export const getMessagesForUser = asyncHandler(async (req, res) => {
   const { userId } = req.params;
 
-  try {
-    const messages = await Message.find({
-      $or: [
-        { sender: req.currentUser._id, recipient: userId },
-        { sender: userId, recipient: req.currentUser._id },
-      ],
-    }).sort({ createdAt: 1 });
+  const messages = await Message.find({
+    $or: [
+      { sender: req.currentUser._id, recipient: userId },
+      { sender: userId, recipient: req.currentUser._id },
+    ],
+  }).sort({ createdAt: 1 });
 
-    res.status(200).json({ success: true, messages });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, message: 'Failed to fetch messages', error });
-  }
+  res.status(200).json({ success: true, messages });
 });
 
 export const sendMessageToUser = asyncHandler(async (req, res) => {
   const { userId, content } = req.body;
 
   const message = new Message({
-    sender: req.currentUser._id, // Admin's ID
+    sender: req.currentUser._id,
     recipient: userId,
     content,
   });

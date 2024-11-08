@@ -228,14 +228,26 @@ export const wasteUpdateMail = (user, waste, waste_status) => ({
     <p>Best regards,<br>Ink Touch CEO,</p>`,
 });
 
-export const requestReminderMail = (adminEmail, user, request) => ({
-  from: config.nodemailerEmail,
-  to: adminEmail,
-  subject: 'Reminder: Follow up with user on product request',
-  html: `
+export async function requestReminderMail(adminEmail, user, request) {
+  return {
+    from: config.nodemailerEmail,
+    to: adminEmail,
+    subject: 'Product Request Reminder',
+    html: `
+     <p> Dear Admin,</p>
 
-      <p>Dear Admin,</p>
-      <p>The request for the product <strong>${request.category} - ${request.size}</strong> made by <strong>${user.name}</strong> is now past its expected return time.</p>
-      <p>Please reach out to the user for an update on the request status.</p>
-      <p>Best regards,<br>Ink Touch CEO,</p>`,
-});
+     <p>This is a gentle reminder that the product request you accepted an hour ago is now due. The details are as follows:</p>
+     <ul>
+     <li> Category: ${request.category}</li>
+     <li> Size: ${request.size}</li>
+     <li>  Quantity Requested: ${request.quantity_requested}</li>
+     <li> Operator: ${user.name}</li>
+      </ul>
+      <p>  Please check on the operator to ensure the requested product has been provided.</p>
+
+      Thank you for your attention.<br>
+      Best regards,<br>
+      Ink Touch CEO
+    `,
+  };
+}

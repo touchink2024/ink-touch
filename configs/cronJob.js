@@ -24,7 +24,7 @@ function keepAlive(url) {
   });
 }
 
-cron.schedule('*/5 * * * *', () => {
+cron.schedule('*/10 * * * *', () => {
   keepAlive(url);
   log.info('Pinging the server every 5 minutes');
 });

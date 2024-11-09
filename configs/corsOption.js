@@ -1,6 +1,6 @@
 import { config } from '../configs/index.js';
 
-const whitelist = config.cors.split(',');
+const whitelist = (config.cors || '').split(',');
 
 export const corsOptions = {
   origin: (origin, callback) => {

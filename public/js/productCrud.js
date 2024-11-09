@@ -174,7 +174,6 @@ document
 
 function showDeleteProductModal(button) {
   const prodId = button.getAttribute('data-product-id');
-  console.log('Product ID:', prodId);
   const url = button.getAttribute('data-url');
 
   if (confirm('Are you sure you want to delete this product?')) {

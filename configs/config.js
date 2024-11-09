@@ -11,6 +11,8 @@ const config = {
       ? process.env.DEV_BASE_URL
       : process.env.PROD_BASE_URL,
 
+  cors: process.env.CORS_WHITELIST,
+
   MongoDbURI: process.env.MONGODB_URI,
 
   sessionSecret: process.env.SESSION_SECRET,

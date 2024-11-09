@@ -24,6 +24,18 @@ userRoute.post(
 
 userRoute.get('/request', verifyUserToken, getUserById, userController.request);
 userRoute.get(
+  '/categories',
+  verifyUserToken,
+  getUserById,
+  userController.getCategories
+);
+userRoute.get(
+  '/products',
+  verifyUserToken,
+  getUserById,
+  userController.getProductsByCategory
+);
+userRoute.get(
   '/product-quantity',
   verifyUserToken,
   getUserById,

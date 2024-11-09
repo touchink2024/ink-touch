@@ -97,6 +97,26 @@ export const request = asyncHandler(async (req, res) => {
   res.render('user/request', { user, ref });
 });
 
+export const getCategories = asyncHandler(async (req, res) => {
+  const categories = await Product.distinct('category');
+  res.json(categories);
+});
+
+export const getProductsByCategory = asyncHandler(async (req, res) => {
+  const { category } = req.query;
+  if (!category) {
+    return res.status(400).json({ message: 'Category is required' });
+  }
+
+  const lowercaseCategory = category.toLowerCase();
+
+  const products = await Product.find({ category: lowercaseCategory })
+    .select('size totalQuantity')
+    .lean();
+
+  res.json(products);
+});
+
 export const getProductQuantity = asyncHandler(async (req, res) => {
   const { category, size } = req.query;
 
@@ -515,7 +535,6 @@ export const getUserMessages = asyncHandler(async (req, res) => {
     .sort({ createdAt: -1 });
 
   const formattedMessages = messages.map((message) => {
-    console.log('Sender:', message.sender);
     return {
       content: message.content,
       senderId: message.sender ? message.sender._id : null,
@@ -547,7 +566,6 @@ export const replyToMessage = asyncHandler(async (req, res) => {
   });
 
   await message.save();
-
   res.status(201).json({ success: true, message: 'Reply sent successfully' });
 });
 

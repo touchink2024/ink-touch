@@ -32,10 +32,6 @@ import {
   wasteUpdateMail,
   updateProfile,
   returnUpdateMail,
-  getAvailableMaterials,
-  getRequestedMaterials,
-  getWastedMaterials,
-  getReturnedMaterials,
 } from '../utils/index.js';
 
 export const adminIndex = asyncHandler(async (req, res) => {

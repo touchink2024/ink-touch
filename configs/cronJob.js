@@ -2,7 +2,7 @@ import https from 'https';
 import cron from 'node-cron';
 import { log } from '../utils/index.js';
 
-const url = 'https://ink-touch.onrender.com/auth/login';
+const url = 'https://inktouch.onrender.com/auth/login';
 
 function keepAlive(url) {
   const request = https.get(url, (res) => {

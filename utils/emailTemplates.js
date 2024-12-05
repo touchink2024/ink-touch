@@ -47,7 +47,7 @@ export const forgetPasswordEmail = (user, resetLink) => ({
 
       <p>If you encounter any issues or need further assistance, feel free to contact our support team at <a href="tel:${config.companyNumber}">${config.companyNumber}</a> or <a href="mailto:${config.companyEmail}">${config.companyEmail}</a>. Your satisfaction is important to us, and we are here to assist you</p>
 
-       <p>Best regards,<br>Ink Touch CEO,</p>`,
+       <p>Best regards,<br> Ink Touch CEO,</p>`,
 });
 
 export const resetPasswordEmail = (user) => ({
@@ -62,7 +62,7 @@ export const resetPasswordEmail = (user) => ({
 
   <p>If you did not request this password reset, please contact us immediately. at <a href="tel:${config.companyNumber}">${config.companyNumber}</a> or <a href="mailto:${config.companyEmail}">${config.companyEmail}</a>. Your satisfaction is important to us, and we are here to assist you</p>
 
-  <p>Best regards,<br>Ink Touch CEO,</p>`,
+  <p>Best regards,<br> Ink Touch CEO,</p>`,
 });
 
 export const loginEmail = (user) => ({
@@ -74,7 +74,7 @@ export const loginEmail = (user) => ({
    
      <p>We value your continued association with us, and it's important to us that your records are kept up-to-date for your convenience and our records.</p>
        
-    <p>Best regards,<br>Ink Touch CEO,</p>`,
+    <p>Best regards,<br> Ink Touch CEO,</p>`,
 });
 
 export const accountStatusMail = (user) => ({

@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import http from 'http';
-import { corsOptions, startServer, keepAlive } from './configs/index.js';
+import { corsOptions, startServer } from './configs/index.js';
 import { router } from './routes/index.js';
 
 import {
@@ -41,5 +41,3 @@ const server = http.createServer(app);
 
 // Start the server
 startServer(server);
-
-keepAlive();

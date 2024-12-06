@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../configs/index.js';
-import { log } from '../utils/index.js';
 import { User } from '../models/index.js';
 
 export const verifyUserToken = async (req, res, next) => {
@@ -21,7 +20,7 @@ export const verifyUserToken = async (req, res, next) => {
       }
     });
   } catch (error) {
-    log.error(error);
+    console.error(error);
     req.session.authErrorMessage = 'An error occurred. Please try again.';
     return res.redirect('/auth/login');
   }
@@ -47,7 +46,7 @@ export const getAdminById = async (req, res, next) => {
     req.currentUser = user;
     next();
   } catch (error) {
-    log.error(error);
+    console.error(error);
     next(error);
   }
 };
@@ -72,7 +71,7 @@ export const getUserById = async (req, res, next) => {
     req.currentUser = user;
     next();
   } catch (error) {
-    log.error(error);
+    console.error(error);
     next(error);
   }
 };

@@ -1,4 +1,3 @@
-export * from './logger.js';
 export * from './mail.js';
 export * from './otpUtils.js';
 export * from './inputSanitizer.js';

@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const response = await fetch(loginUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email, password }),
       });
 

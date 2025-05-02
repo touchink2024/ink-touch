@@ -6,6 +6,7 @@ import {
   addReturnCountToLocals,
   addWasteCountToLocals,
 } from './requestCount.js';
+import {domainExpiryCheck} from './domainExpiryCheck.js'
 import {
   BadRequest,
   Conflict,
@@ -24,6 +25,7 @@ export {
   getAdminById,
   getUserById,
   appMiddleware,
+  domainExpiryCheck,
   checkRole,
   addRequestCountToLocals,
   addReturnCountToLocals,

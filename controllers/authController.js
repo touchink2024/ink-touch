@@ -258,7 +258,7 @@ export const loginPost = asyncHandler(async (req, res) => {
     { expiresIn: '24h' }
   );
 
-  // Fixed: Changed 'token' to 'accessToken'
+
   res.cookie('accessToken', accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
@@ -284,99 +284,3 @@ export const loginPost = asyncHandler(async (req, res) => {
     message: 'Login successful',
   });
 });
-
-// export const loginPost = asyncHandler(async (req, res) => {
-//   const sanitizedBody = sanitizeObject(req.body);
-//   const { error, value } = loginSchema.validate(sanitizedBody, {
-//     abortEarly: false,
-//   });
-
-//   if (error) {
-//     const errors = error.details.map((err) => ({
-//       key: err.path[0],
-//       msg: err.message,
-//     }));
-//     return res.status(400).json({ success: false, errors });
-//   }
-
-//   const { email, password } = value;
-//   const user = await User.findOne({ email }).select('+password');
-//   if (!user) {
-//     return res.status(401).json({
-//       success: false,
-//       message: 'Invalid credentials. Incorrect email or password.',
-//     });
-//   }
-
-//   const isPasswordValid = await user.matchPassword(password);
-//   if (!isPasswordValid) {
-//     user.failedLoginAttempts += 1;
-
-//     if (user.failedLoginAttempts >= config.maxFailedAttempt) {
-//       user.accountLocked = true;
-//       user.accountStatus = 'Locked';
-//       await user.save();
-
-//       return res.status(423).json({
-//         success: false,
-//         message: 'Account locked. Contact support.',
-//       });
-//     }
-
-//     await user.save();
-//     return res.status(401).json({
-//       success: false,
-//       message: `Invalid credentials. ${
-//         config.maxFailedAttempt - user.failedLoginAttempts
-//       } attempt(s) left.`,
-//     });
-//   }
-
-//   if (user.accountLocked || user.accountStatus === 'Locked') {
-//     return res.status(423).json({
-//       success: false,
-//       message: 'Your account is locked. Contact support.',
-//     });
-//   }
-
-//   user.failedLoginAttempts = 0;
-//   await user.save();
-
-//   if (!user.isVerified) {
-//     return res.status(412).json({
-//       success: false,
-//       message: 'Verify your account with admin before login.',
-//     });
-//   }
-
-//   const accessToken = jwt.sign(
-//     { id: user._id, role: user.role },
-//     config.accessToken,
-//     { expiresIn: '24h' }
-//   );
-
-//   res.cookie('accessToken', token, {
-//     httpOnly: true,
-//     secure: process.env.NODE_ENV === 'production',
-//     sameSite: 'strict',
-//     maxAge: 24 * 60 * 60 * 1000,
-//   });
-
-//   req.session.accessToken = accessToken;
-
-//   let redirectUrl =
-//     user.role === 'Admin' || user.role === 'Super_Admin'
-//       ? '/admin/index'
-//       : '/user/index';
-
-//   const emailContent = loginEmail(user);
-//   await sendMail(emailContent);
-
-//   return res.json({
-//     success: true,
-//     redirectUrl,
-//     user: { id: user.id, email: user.email, role: user.role },
-//     accessToken,
-//     message: 'Login successful',
-//   });
-// });

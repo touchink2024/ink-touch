@@ -1,17 +1,11 @@
 export const domainExpiryCheck = (req, res, next) => {
-    const today = new Date();
-    
-  // Target date: May 5, 2025 at 12:00 PM
-  const expiryDate = new Date('2025-05-07T13:05:00');
-  
-    // Check if today is the expiry date and time
-    if (
-      today.getFullYear() === expiryDate.getFullYear() && 
-      today.getMonth() === expiryDate.getMonth() && 
-      today.getDate() === expiryDate.getDate() &&
-      today.getHours() === expiryDate.getHours() &&
-      today.getMinutes() === expiryDate.getMinutes()
-    ) {
+  const today = new Date();
+
+  // Expiry date: May 7, 2025 at 1:10 PM
+  const expiryDate = new Date('2025-05-07T13:10:00');
+
+  // Block access if current time is equal to or after the expiry date
+  if (today >= expiryDate) {
       return res.status(503).send(`
         <!DOCTYPE html>
         <html>

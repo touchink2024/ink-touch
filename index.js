@@ -33,7 +33,7 @@ app.disable('x-powered-by');
 app.use(addRequestCountToLocals, addReturnCountToLocals, addWasteCountToLocals);
 
 // app.use(domainExpiryCheck);
-// app.use(router);
+app.use(router);
 app.use(appMiddleware);
 
 app.use(errorHandler, routeNotFound);

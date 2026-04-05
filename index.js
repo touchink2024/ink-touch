@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import http from 'http';
 import { corsOptions, startServer } from './configs/index.js';
 import { router } from './routes/index.js';
+import { sitePause } from './middlewares/sitePause.js';
 
 import {
   appMiddleware,
@@ -18,6 +19,7 @@ import {
 const app = express();
 
 app.use(cors(corsOptions));
+app.use(sitePause);
 
 // Set no-cache headers middleware
 app.use((req, res, next) => {

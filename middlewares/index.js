@@ -6,6 +6,7 @@ import {
   addReturnCountToLocals,
   addWasteCountToLocals,
 } from './requestCount.js';
+import { sitePause } from './sitePause.js';
 import {domainExpiryCheck} from './domainExpiryCheck.js'
 import {
   BadRequest,
@@ -21,6 +22,7 @@ import {
 } from './error.js';
 
 export {
+  sitePause,
   verifyUserToken,
   getAdminById,
   getUserById,
